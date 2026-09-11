@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="es-AR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Nortiqa — laboratorio: cubos reflectantes</title>
+    <style>
+      :root { color-scheme: dark; }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0; min-height: 100svh; background: #04080B; color: #F4F6F5;
+        font: 14px/1.5 'Hanken Grotesk', system-ui, sans-serif; overflow: hidden;
+      }
+      canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+      .hud {
+        position: fixed; z-index: 2; padding: 0.9rem 1.1rem;
+        font-size: 0.6875rem; letter-spacing: 0.16em; text-transform: uppercase;
+        color: #8FA3A8; pointer-events: none;
+      }
+      .hud b { color: #C9A15B; font-weight: 600; }
+      #arriba { inset: 0 0 auto 0; }
+      #abajo  { inset: auto 0 0 0; display: flex; justify-content: space-between; gap: 1rem; }
+      #aviso {
+        position: fixed; inset: 0; z-index: 3; display: none;
+        place-content: center; text-align: center; padding: 2rem;
+        background: #04080B; line-height: 1.7;
+      }
+      #aviso code { color: #C9A15B; }
+    </style>
+  </head>
+  <body>
+    <canvas id="lienzo"></canvas>
+
+    <p class="hud" id="arriba"><b>Laboratorio</b> · 500 cubos · WebGL2 · sin dependencias</p>
+    <p class="hud" id="abajo"><span>Mové el mouse</span><span id="fps">— fps</span></p>
+
+    <div id="aviso">
+      <div>
+        <p>Este laboratorio necesita <b>WebGL2</b>.</p>
+        <p id="motivo">—</p>
+        <p style="color:#63767B">Lo soporta cualquier navegador de los últimos diez años.</p>
+      </div>
+    </div>
+
+    <script>
+/* =============================================================================
+   NORTIQA — laboratorio: 500 cubos reflectantes
+   -----------------------------------------------------------------------------
+   Port del ejemplo `webgpu_materials_basic` de three.js, con dos cambios que
+   pidió Leandro: CUBOS en vez de esferas, y un entorno TECH en vez de la foto
+   de Pisa.
+
+   ⚠️ POR QUÉ NO ES WebGPU, que era la primera versión de este archivo:
+
+   `navigator.gpu` EXISTE bajo `file://` y el contexto es seguro —lo medí— pero
+   `requestAdapter()` devuelve **null**. Verificado en el Chromium de Leandro:
+   el ejemplo de three.js anda perfecto en threejs.org, que es `https`, y este
+   documento no. Chrome no entrega adaptador WebGPU a un origen `file://`.
+
+   El error de método fue mío y vale anotarlo: comprobé que la API EXISTE y
+   concluí que FUNCIONA. Son dos cosas distintas, y la prueba real —pedir el
+   adaptador— quedaba colgada en el headless, cosa que atribuí al entorno en
+   vez de sospechar del origen.
+
+   WebGL2 sí funciona con `file://` —el hero del sitio lo viene haciendo— así
+   que el laboratorio va en WebGL2. El resultado visual es el mismo.
+
+   Si algún día se quiere WebGPU o three.js de verdad, las dos cosas necesitan
+   servir la carpeta:  python3 -m http.server  y abrir por `http://localhost`.
+
+   El entorno es PROCEDIMENTAL, no un cubemap de seis PNG: se calcula en el
+   shader a partir de la dirección, y sirve de fondo y de mapa de reflexión con
+   la misma función —que es lo que hace el original, donde `scene.background` y
+   el `envMap` son el mismo objeto— pero sin descargar nada.
+   ========================================================================== */
+
+(function () {
+  'use strict';
+
+  var CUANTOS = 500;
+
+  var lienzo = document.getElementById('lienzo');
+  var aviso = document.getElementById('aviso');
+  var marcaFps = document.getElementById('fps');
+
+  function fallar(motivo) {
+    console.error('[laboratorio] ' + motivo);
+    var m = document.getElementById('motivo');
+    if (m) m.innerHTML = 'Motivo: <b>' + motivo + '</b>';
+    aviso.style.display = 'grid';
+    lienzo.style.display = 'none';
+  }
+
+  var gl = lienzo.getContext('webgl2', { antialias: true, alpha: false });
+  if (!gl) { fallar('este navegador no da contexto webgl2'); return; }
+
+  /* --- Matemática mínima -------------------------------------------------- */
+
+  function perspectiva(fov, aspecto, cerca, lejos) {
+    var f = 1 / Math.tan(fov / 2), nf = 1 / (cerca - lejos);
+    return new Float32Array([f / aspecto, 0, 0, 0, 0, f, 0, 0,
+                             0, 0, (lejos + cerca) * nf, -1, 0, 0, 2 * lejos * cerca * nf, 0]);
+  }
+  function cruz(a, b) { return [a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]]; }
+  function punto(a, b) { return a[0]*b[0] + a[1]*b[1] + a[2]*b[2]; }
+  function normalizar(v) { var l = Math.hypot(v[0], v[1], v[2]) || 1; return [v[0]/l, v[1]/l, v[2]/l]; }
+  function mirarA(ojo, centro, arriba) {
+    var z = normalizar([ojo[0]-centro[0], ojo[1]-centro[1], ojo[2]-centro[2]]);
+    var x = normalizar(cruz(arriba, z));
+    var y = cruz(z, x);
+    return new Float32Array([x[0], y[0], z[0], 0, x[1], y[1], z[1], 0, x[2], y[2], z[2], 0,
+                             -punto(x, ojo), -punto(y, ojo), -punto(z, ojo), 1]);
+  }
+  function multiplicar(a, b) {
+    var r = new Float32Array(16);
+    for (var i = 0; i < 4; i++) for (var j = 0; j < 4; j++) {
+      var s = 0;
+      for (var k = 0; k < 4; k++) s += a[k*4+j] * b[i*4+k];
+      r[i*4+j] = s;
+    }
+    return r;
+  }
+
+  /* --- El cubo: 36 vértices con su normal --------------------------------- */
+
+  function geometriaCubo() {
+    var caras = [
+      [[0,0,1],  [-1,-1, 1], [ 1,-1, 1], [ 1, 1, 1], [-1, 1, 1]],
+      [[0,0,-1], [ 1,-1,-1], [-1,-1,-1], [-1, 1,-1], [ 1, 1,-1]],
+      [[0,1,0],  [-1, 1, 1], [ 1, 1, 1], [ 1, 1,-1], [-1, 1,-1]],
+      [[0,-1,0], [-1,-1,-1], [ 1,-1,-1], [ 1,-1, 1], [-1,-1, 1]],
+      [[1,0,0],  [ 1,-1, 1], [ 1,-1,-1], [ 1, 1,-1], [ 1, 1, 1]],
+      [[-1,0,0], [-1,-1,-1], [-1,-1, 1], [-1, 1, 1], [-1, 1,-1]]
+    ];
+    var d = [];
+    caras.forEach(function (c) {
+      var n = c[0], v = [c[1], c[2], c[3], c[4]];
+      [0,1,2,0,2,3].forEach(function (i) {
+        d.push(v[i][0]*0.5, v[i][1]*0.5, v[i][2]*0.5, n[0], n[1], n[2]);
+      });
+    });
+    return new Float32Array(d);
+  }
+
+  /* --- Shaders ------------------------------------------------------------ */
+
+  var ENTORNO = [
+    '// El mismo campo sirve de fondo y de mapa de reflexion, igual que el',
+    '// `textureCube` del original: piso con grilla, banda de horizonte y',
+    '// franjas calidas arriba. Lectura tech sin una sola textura.',
+    'float grilla(vec2 p, float paso) {',
+    '  vec2 c = p / paso;',
+    '  vec2 d = abs(fract(c - 0.5) - 0.5) / max(fwidth(c), vec2(1e-5));',
+    '  return 1.0 - min(min(d.x, d.y), 1.0);',
+    '}',
+    'vec3 entorno(vec3 dir) {',
+    '  vec3 d = normalize(dir);',
+    '  vec3 col = mix(vec3(0.012, 0.028, 0.036), vec3(0.02, 0.055, 0.07),',
+    '                 clamp(d.y * 0.5 + 0.5, 0.0, 1.0));',
+    '  if (d.y < -0.015) {',
+    '    float t = -1.0 / d.y;',
+    '    vec2 p = d.xz * t;',
+    '    float g = grilla(p, 1.0) * 0.55 + grilla(p, 0.2) * 0.22;',
+    '    col += vec3(0.10, 0.58, 0.64) * g * exp(-length(p) * 0.05);',
+    '  }',
+    '  col += vec3(0.12, 0.55, 0.70) * exp(-abs(d.y) * 22.0) * 0.55;',
+    '  // LUZ DE ARRIBA. Era dorada y con bordes netos, o sea: rayos. Molestaba.',
+    '  // Pero NO se puede borrar: es el valor mas alto del cielo y sin el las',
+    '  // caras de arriba pierden con que diferenciarse del resto, que es de',
+    '  // donde sale el volumen. Asi que se queda la ESTRUCTURA -angular, para',
+    '  // que dos caras distintas agarren cosas distintas- y cambian las dos',
+    '  // cosas que la hacian leer como rayo: el color, ahora luz fria, y el',
+    '  // ancho, ahora lobulos amplios de borde blando.',
+    '  float ang = atan(d.z, d.x);',
+    '  float franja = smoothstep(0.25, 0.60, fract(ang * 0.9 + 0.2)) * smoothstep(0.05, 0.55, d.y);',
+    '  col += vec3(0.72, 0.95, 0.86) * franja * 0.30;',
+    '  return col;',
+    '}'
+  ].join('\n');
+
+  var VS_FONDO = '#version 300 es\n' +
+    'out vec2 vUv;\n' +
+    'void main() {\n' +
+    '  vec2 p = vec2((gl_VertexID << 1) & 2, gl_VertexID & 2) * 2.0 - 1.0;\n' +
+    '  vUv = p; gl_Position = vec4(p, 0.999, 1.0);\n' +
+    '}';
+
+  var FS_FONDO = '#version 300 es\nprecision highp float;\n' +
+    'in vec2 vUv; out vec4 salida;\n' +
+    'uniform vec3 uCam; uniform float uAspecto;\n' + ENTORNO + '\n' +
+    'void main() {\n' +
+    '  vec3 ade = normalize(-uCam);\n' +
+    '  vec3 der = normalize(cross(vec3(0.0, 1.0, 0.0), ade));\n' +
+    '  vec3 arr = cross(ade, der);\n' +
+    '  vec3 d = normalize(der * vUv.x * uAspecto * 0.6 + arr * vUv.y * 0.6 + ade);\n' +
+    '  salida = vec4(pow(entorno(d), vec3(0.4545)), 1.0);\n' +
+    '}';
+
+  var VS_CUBO = '#version 300 es\n' +
+    'in vec3 aPos; in vec3 aNor; in vec4 aInst; in vec4 aGiro;\n' +
+    '// aInst = (fase, z fijo, escala, velocidad de giro);  aGiro.x = fase del giro.\n' +
+    '// La orbita se calcula ACA y no en JS: el original reescribe las 500\n' +
+    '// posiciones por cuadro desde la CPU; con instancias sale gratis.\n' +
+    'uniform mat4 uVistaProy; uniform float uT;\n' +
+    'out vec3 vMundo; out vec3 vNormal;\n' +
+    'mat3 rotar(vec3 eje, float ang) {\n' +
+    '  vec3 a = normalize(eje);\n' +
+    '  float s = sin(ang), c = cos(ang), t = 1.0 - c;\n' +
+    '  return mat3(t*a.x*a.x + c,     t*a.x*a.y + s*a.z, t*a.x*a.z - s*a.y,\n' +
+    '              t*a.x*a.y - s*a.z, t*a.y*a.y + c,     t*a.y*a.z + s*a.x,\n' +
+    '              t*a.x*a.z + s*a.y, t*a.y*a.z - s*a.x, t*a.z*a.z + c);\n' +
+    '}\n' +
+    'void main() {\n' +
+    '  float fase = aInst.x;\n' +
+    '  vec3 centro = vec3(5.0 * cos(uT * 0.1 + fase),\n' +
+    '                     5.0 * sin(uT * 0.1 + fase * 1.1),\n' +
+    '                     aInst.y);\n' +
+    '  // Solo alrededor de Y: asi las aristas verticales quedan verticales y\n' +
+    '  // las caras de arriba y abajo paralelas al piso. Con eje libre los cubos\n' +
+    '  // volteaban y se perdia la referencia de la grilla. El giro inicial sale\n' +
+    '  // de aGiro.x para que no arranquen todos en fase.\n' +
+    '  mat3 R = rotar(vec3(0.0, 1.0, 0.0), uT * aInst.w + aGiro.x * 6.2832);\n' +
+    '  vec3 mundo = R * (aPos * aInst.z) + centro;\n' +
+    '  vMundo = mundo; vNormal = R * aNor;\n' +
+    '  gl_Position = uVistaProy * vec4(mundo, 1.0);\n' +
+    '}';
+
+  var FS_CUBO = '#version 300 es\nprecision highp float;\n' +
+    'in vec3 vMundo; in vec3 vNormal; out vec4 salida;\n' +
+    'uniform vec3 uCam;\n' + ENTORNO + '\n' +
+    'void main() {\n' +
+    '  vec3 n = normalize(vNormal);\n' +
+    '  vec3 v = normalize(vMundo - uCam);\n' +
+    '  vec3 col = entorno(reflect(v, n));\n' +
+    '  float fres = pow(1.0 - max(dot(-v, n), 0.0), 4.0);\n' +
+    '  col += vec3(0.35, 0.75, 0.85) * fres * 0.35;\n' +
+    '  col *= 0.55 + 0.45 * max(dot(n, normalize(vec3(0.4, 0.8, 0.3))), 0.0);\n' +
+    '  // TINTE del material: el `color` del MeshBasicMaterial, que en el ejemplo\n' +
+    '  // original va en blanco. Multiplica, como todo lo demas aca, asi que no\n' +
+    '  // puede volver a igualar una cara con el fondo. Baja el azul y deja el\n' +
+    '  // rojo intacto: calido sin llegar a dorado.\n' +
+    '  col *= vec3(1.00, 0.985, 0.925);\n' +
+    '  salida = vec4(pow(col, vec3(0.4545)), 1.0);\n' +
+    '}';
+
+  function compilar(tipo, src) {
+    var s = gl.createShader(tipo);
+    gl.shaderSource(s, src); gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+      fallar('GLSL: ' + gl.getShaderInfoLog(s).split('\n')[0]);
+      return null;
+    }
+    return s;
+  }
+  function programa(vs, fs) {
+    var v = compilar(gl.VERTEX_SHADER, vs), f = compilar(gl.FRAGMENT_SHADER, fs);
+    if (!v || !f) return null;
+    var p = gl.createProgram();
+    gl.attachShader(p, v); gl.attachShader(p, f); gl.linkProgram(p);
+    if (!gl.getProgramParameter(p, gl.LINK_STATUS)) { fallar('enlace: ' + gl.getProgramInfoLog(p)); return null; }
+    return p;
+  }
+
+  var progFondo = programa(VS_FONDO, FS_FONDO);
+  var progCubo  = programa(VS_CUBO, FS_CUBO);
+  if (!progFondo || !progCubo) return;
+
+  /* --- Buffers ------------------------------------------------------------ */
+
+  var vao = gl.createVertexArray();
+  gl.bindVertexArray(vao);
+
+  var vertices = geometriaCubo();
+  var bufVert = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, bufVert);
+  gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+  var aPos = gl.getAttribLocation(progCubo, 'aPos'), aNor = gl.getAttribLocation(progCubo, 'aNor');
+  gl.enableVertexAttribArray(aPos); gl.vertexAttribPointer(aPos, 3, gl.FLOAT, false, 24, 0);
+  gl.enableVertexAttribArray(aNor); gl.vertexAttribPointer(aNor, 3, gl.FLOAT, false, 24, 12);
+
+  // Las magnitudes salen del original, no del ojo: esfera de radio 0,1 con
+  // escala 1 a 4 —o sea diámetro 0,2 a 0,8— repartidas en un cubo de ±5, y la
+  // cámara ADENTRO de esa nube. Eso es lo que hace que pasen cerca.
+  var inst = new Float32Array(CUANTOS * 8);
+  for (var i = 0; i < CUANTOS; i++) {
+    var o = i * 8;
+    inst[o]     = i;                                   // fase de la órbita
+    inst[o + 1] = Math.random() * 10 - 5;              // z fijo
+    inst[o + 2] = 0.2 + Math.random() * 0.6;           // arista del cubo
+    inst[o + 3] = 0.1 + Math.random() * 0.35;          // velocidad de giro
+    inst[o + 4] = Math.random();                       // fase del giro
+    inst[o + 5] = 0;
+    inst[o + 6] = 0;
+    inst[o + 7] = 0;
+  }
+  var bufInst = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, bufInst);
+  gl.bufferData(gl.ARRAY_BUFFER, inst, gl.STATIC_DRAW);
+  var aInst = gl.getAttribLocation(progCubo, 'aInst'), aGiro = gl.getAttribLocation(progCubo, 'aGiro');
+  gl.enableVertexAttribArray(aInst); gl.vertexAttribPointer(aInst, 4, gl.FLOAT, false, 32, 0);
+  gl.vertexAttribDivisor(aInst, 1);
+  gl.enableVertexAttribArray(aGiro); gl.vertexAttribPointer(aGiro, 4, gl.FLOAT, false, 32, 16);
+  gl.vertexAttribDivisor(aGiro, 1);
+  gl.bindVertexArray(null);
+
+  var vaoFondo = gl.createVertexArray();   // el triángulo se genera en el shader
+
+  var U = {
+    fondoCam: gl.getUniformLocation(progFondo, 'uCam'),
+    fondoAsp: gl.getUniformLocation(progFondo, 'uAspecto'),
+    cuboVP:   gl.getUniformLocation(progCubo, 'uVistaProy'),
+    cuboCam:  gl.getUniformLocation(progCubo, 'uCam'),
+    cuboT:    gl.getUniformLocation(progCubo, 'uT')
+  };
+
+  /* --- Bucle -------------------------------------------------------------- */
+
+  var ancho = 0, alto = 0;
+  function medir() {
+    var dpr = Math.min(devicePixelRatio || 1, 2);
+    ancho = Math.max(1, Math.round(innerWidth * dpr));
+    alto  = Math.max(1, Math.round(innerHeight * dpr));
+    lienzo.width = ancho; lienzo.height = alto;
+  }
+  medir();
+  addEventListener('resize', medir, { passive: true });
+
+  var ratonX = 0, ratonY = 0, camX = 0, camY = 0;
+  // Igual que el original: la posición del mouse en píxeles dividida por 100,
+  // o sea que la cámara recorre unas ±7 unidades y atraviesa la nube.
+  addEventListener('pointermove', function (e) {
+    ratonX = (e.clientX - innerWidth / 2) / 100;
+    ratonY = (e.clientY - innerHeight / 2) / 100;
+  }, { passive: true });
+
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var t0 = performance.now(), cuadros = 0, ultimoFps = t0, enCola = false;
+
+  gl.enable(gl.DEPTH_TEST);
+  gl.enable(gl.CULL_FACE);
+
+  function cuadro(ahora) {
+    enCola = false;
+    if (document.hidden) return;
+
+    var t = reduce ? 4 : (ahora - t0) / 1000;
+    camX += (ratonX - camX) * 0.05;
+    camY += (-ratonY - camY) * 0.05;
+    // z = 3 y plano cercano en 0,01, los del original: la cámara queda DENTRO
+    // de la nube y los cubos pueden pasarle por al lado sin recortarse.
+    var ojo = [camX, camY, 3];
+    var vp = multiplicar(perspectiva(60 * Math.PI / 180, ancho / alto, 0.01, 100),
+                         mirarA(ojo, [0, 0, 0], [0, 1, 0]));
+
+    gl.viewport(0, 0, ancho, alto);
+    gl.clearColor(0.015, 0.03, 0.04, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+    gl.depthMask(false);
+    gl.useProgram(progFondo);
+    gl.uniform3f(U.fondoCam, ojo[0], ojo[1], ojo[2]);
+    gl.uniform1f(U.fondoAsp, ancho / alto);
+    gl.bindVertexArray(vaoFondo);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    gl.depthMask(true);
+
+    gl.useProgram(progCubo);
+    gl.uniformMatrix4fv(U.cuboVP, false, vp);
+    gl.uniform3f(U.cuboCam, ojo[0], ojo[1], ojo[2]);
+    gl.uniform1f(U.cuboT, t);
+    gl.bindVertexArray(vao);
+    gl.drawArraysInstanced(gl.TRIANGLES, 0, 36, CUANTOS);
+
+    cuadros++;
+    if (ahora - ultimoFps > 500) {
+      marcaFps.textContent = Math.round(cuadros * 1000 / (ahora - ultimoFps)) + ' fps';
+      cuadros = 0; ultimoFps = ahora;
+    }
+    pedir();
+  }
+
+  // Guarda de bucle único, la misma disciplina que el resto del sitio.
+  function pedir() {
+    if (enCola || document.hidden) return;
+    enCola = true;
+    requestAnimationFrame(cuadro);
+  }
+
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) pedir(); });
+  pedir();
+
+  window.laboratorio = { gl: gl, cuantos: CUANTOS };
+})();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="es-AR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Nortiqa — diagnóstico de render</title>
+    <style>
+      :root { color-scheme: dark; }
+      body {
+        margin: 0; min-height: 100svh; background: #040E0C; color: #F4F6F5;
+        font: 15px/1.6 system-ui, sans-serif; display: grid;
+        grid-template-rows: auto 1fr;
+      }
+      #panel {
+        padding: 1.25rem 1.5rem; border-bottom: 1px solid #1A3A34;
+        background: #071714; display: grid; gap: 0.35rem;
+        font-variant-numeric: tabular-nums;
+      }
+      h1 { margin: 0 0 0.5rem; font-size: 1rem; letter-spacing: 0.12em; text-transform: uppercase; color: #C9A15B; }
+      .fila { display: grid; grid-template-columns: 13rem 1fr; gap: 1rem; }
+      .fila span:first-child { color: #7E9691; }
+      b { color: #C9A15B; font-weight: 600; }
+      .bien { color: #7BC49A; } .mal { color: #E08A6A; }
+      canvas { width: 100%; height: 100%; display: block; }
+      #nota { padding: 0.75rem 1.5rem; font-size: 13px; color: #9FB4AE; border-top: 1px solid #1A3A34; }
+    </style>
+  </head>
+  <body>
+    <div id="panel">
+      <h1>Diagnóstico de render</h1>
+      <div class="fila"><span>Motor WebGL</span><span id="d-api">—</span></div>
+      <div class="fila"><span>Placa en uso</span><span id="d-gpu">—</span></div>
+      <div class="fila"><span>Fabricante</span><span id="d-vendor">—</span></div>
+      <div class="fila"><span>¿Por hardware?</span><span id="d-hw">—</span></div>
+      <div class="fila"><span>Cuadros por segundo</span><span id="d-fps"><b>—</b></span></div>
+      <div class="fila"><span>Resolución interna</span><span id="d-res">—</span></div>
+      <div class="fila"><span>Píxeles por cuadro</span><span id="d-px">—</span></div>
+      <div class="fila"><span>Escala · recorte</span><span id="d-esc">—</span></div>
+      <div class="fila"><span>Dibujos por segundo</span><span id="d-dps">—</span></div>
+    </div>
+    <canvas id="escena"></canvas>
+    <div id="nota">
+      Si «Placa en uso» dice <b>SwiftShader</b> o <b>llvmpipe</b>, el navegador está dibujando por software y por eso va lento.
+      Si dice <b>Intel</b> o <b>NVIDIA</b>, la aceleración está activa y lo que hay que ajustar es el costo de la escena.
+    </div>
+
+    <script src="scene.js"></script>
+    <script>
+      (function () {
+        var c = document.getElementById('escena');
+        var set = function (id, t, cls) {
+          var el = document.getElementById(id);
+          el.innerHTML = t; if (cls) el.className = cls;
+        };
+
+        var gl = c.getContext('webgl2') || c.getContext('webgl');
+        if (!gl) { set('d-api', 'sin WebGL', 'mal'); return; }
+
+        set('d-api', gl instanceof WebGL2RenderingContext ? 'WebGL 2' : 'WebGL 1');
+
+        var info = gl.getExtension('WEBGL_debug_renderer_info');
+        var ren = info ? gl.getParameter(info.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER);
+        var ven = info ? gl.getParameter(info.UNMASKED_VENDOR_WEBGL) : gl.getParameter(gl.VENDOR);
+        set('d-gpu', ren);
+        set('d-vendor', ven);
+
+        var software = /swiftshader|llvmpipe|software|mesa offscreen/i.test(ren);
+        set('d-hw', software ? 'NO — está dibujando por software' : 'SÍ — aceleración activa',
+            software ? 'mal' : 'bien');
+
+        // El contexto de prueba se descarta; la escena crea el suyo.
+        var api = window.montarEscena(c, function () {});
+        if (!api) { set('d-fps', 'la escena no arrancó', 'mal'); return; }
+
+        setInterval(function () {
+          var f = api.dps ? Math.round(api.fps) : 0;
+          set('d-fps', '<b>' + f + '</b> ' + (f >= 50 ? '(fluido)' : f >= 30 ? '(aceptable)' : '(lento)'));
+          set('d-res', c.width + ' × ' + c.height);
+          set('d-px', (c.width * c.height / 1000).toFixed(0) + ' mil por cuadro');
+          set('d-esc', api.escala.toFixed(3) + '  ·  recorte ' + (api.calidad * 100).toFixed(0) + '%');
+          var dps = api.dps;
+          set('d-dps', dps + (dps > 75 ? '  ← ¡hay bucles de render duplicados!' : '  (un solo bucle)'),
+              dps > 75 ? 'mal' : 'bien');
+        }, 400);
+      })();
+    </script>
+  </body>
+</html>

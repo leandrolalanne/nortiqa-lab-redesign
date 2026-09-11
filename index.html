@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="es-AR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="description" content="Nortiqa — sistemas de inteligencia organizacional. Transformamos estructuras en organizaciones capaces de aprender, adaptarse y evolucionar.">
+    <meta name="theme-color" content="#040E0C">
+    <title>Nortiqa Lab – Inteligencia artificial aplicada para operaciones reales.</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="scene.js" defer></script>
+    <script src="haz.js" defer></script>
+    <script src="marcas.js" defer></script>
+    <script src="terminal.js" defer></script>
+    <script src="tablero.js" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body class="home">
+    <a href="#contenido"><span>Saltar al contenido</span></a>
+
+    <!-- El porcentaje mide la compilación real del shader y el primer cuadro.
+         No es una barra decorativa. -->
+    <div id="precarga" role="status" aria-live="polite">
+      <div class="precarga-grilla" aria-hidden="true">
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
+      <div class="precarga-pie hud">
+        <span>Construyendo escena</span>
+        <span><b id="pct">0</b>%</span>
+      </div>
+    </div>
+
+    <canvas id="escena" aria-hidden="true"></canvas>
+
+    <header>
+      <a href="index.html" aria-label="Nortiqa, inicio">
+        NORTIQA<small>Sistemas de Inteligencia Organizacional</small>
+      </a>
+      <nav aria-label="Principal">
+        <div id="nav-links">
+          <a href="productos-ia.html">Productos</a>
+          <a href="index.html#metodo">Método</a>
+          <a href="programas-startup-ia.html">Programas</a>
+        </div>
+        <a href="contacto.html">Hablemos ↗</a>
+      </nav>
+    </header>
+
+    <!-- El rail no es decoración: el contenido ya venía numerado 01–07 y
+         es la secuencia real del argumento. -->
+    <nav id="capitulos" aria-label="Capítulos">
+      <a href="#hero" aria-current="true"><span>Inicio</span></a>
+      <a href="#enfoque"><span>Enfoque</span></a>
+      <a href="#productos"><span>Productos</span></a>
+      <a href="#metodo"><span>Método</span></a>
+      <a href="#arquitectura"><span>Arquitectura</span></a>
+      <a href="#aplicaciones"><span>Aplicaciones</span></a>
+      <a href="#roadmap"><span>Roadmap</span></a>
+      <a href="#contacto"><span>Conversemos</span></a>
+    </nav>
+
+    <main id="contenido">
+      <section id="hero" aria-labelledby="inicio-titulo">
+        <div class="hero-copy">
+          <p class="hud">Arquitectura · Sistemas vivos · Capacidad emergente</p>
+          <h1 id="inicio-titulo">Sistemas de inteligencia <em>organizacional.</em></h1>
+          <p>Transformamos estructuras en organizaciones capaces de aprender, adaptarse y evolucionar más allá de las personas que las integran.</p>
+          <div class="acciones">
+            <a href="#productos"><span>Conocer más →</span></a>
+            <a href="#metodo"><span>Ver método</span></a>
+          </div>
+        </div>
+        <div class="capacidades tira" aria-label="Capacidades Nortiqa">
+          <!-- Iconos de Lucide (lucide.dev), licencia ISC. Copia de la licencia
+               en assets/iconos/LICENCIA-lucide.txt. Van incrustados y no como
+               <img> para que tomen `currentColor` del capítulo. -->
+          <p class="capacidad"><svg class="icono icono--grilla" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1" /> <rect width="7" height="7" x="14" y="3" rx="1" /> <rect width="7" height="7" x="14" y="14" rx="1" /> <rect width="7" height="7" x="3" y="14" rx="1" /></svg><span><strong>Diagnóstico</strong><small>Inteligente</small></span></p>
+          <p class="capacidad"><svg class="icono icono--diana" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /> <circle cx="12" cy="12" r="6" /> <circle cx="12" cy="12" r="2" /></svg><span><strong>Arquitectura</strong><small>Organizacional</small></span></p>
+          <p class="capacidad"><svg class="icono icono--rombo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.7 10.3a2.41 2.41 0 0 0 0 3.41l7.59 7.59a2.41 2.41 0 0 0 3.41 0l7.59-7.59a2.41 2.41 0 0 0 0-3.41l-7.59-7.59a2.41 2.41 0 0 0-3.41 0Z" /></svg><span><strong>Plataforma</strong><small>Nortiqa OS</small></span></p>
+          <p class="capacidad"><svg class="icono icono--aguja" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 14 4-4" /> <path d="M3.34 19a10 10 0 1 1 17.32 0" /></svg><span><strong>Medición</strong><small>Capacidad (NOI)</small></span></p>
+          <p class="capacidad"><svg class="icono icono--alza" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 7h6v6" /> <path d="m22 7-8.5 8.5-5-5L2 17" /></svg><span><strong>Evolución</strong><small>Continua</small></span></p>
+        </div>
+      </section>
+
+      <section id="enfoque" class="cap cap--claro-2" aria-labelledby="enfoque-titulo">
+        <div class="cap-cols">
+          <header class="cap-cabeza">
+            <p class="hud">01 / Enfoque</p>
+            <h2 id="enfoque-titulo">Sistemas antes que herramientas.</h2>
+          </header>
+          <div class="cap-texto">
+            <p>La tecnología es un medio. La capacidad organizacional es el producto.</p>
+            <p>No reemplazamos procesos con promesas abstractas. Transformamos tareas concretas en flujos controlados, auditables y útiles para equipos reales.</p>
+            <div class="chips">
+              <span class="chip">Control humano</span>
+              <span class="chip">Trazabilidad</span>
+              <span class="chip">Integración</span>
+              <span class="chip">Medición</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="productos" class="cap cap--azul" aria-labelledby="productos-titulo">
+        <header class="cap-cabeza">
+          <p class="hud">02 / Productos</p>
+          <h2 id="productos-titulo">Sistemas en construcción</h2>
+        </header>
+        <p>Productos propios y módulos listos para convertirse en pilotos concretos.</p>
+        <div class="riel">
+          <div class="tarjetas tarjetas--fila">
+            <article class="tarjeta">
+              <span class="hud">01 · MVP funcional</span>
+              <a href="https://nortiqalab.com/val-cv/" class="tarjeta-media">
+                <img src="assets/val-cv.png" alt="Interfaz de VAL-CV Intelligence" loading="lazy" width="640" height="400">
+              </a>
+              <h3>VAL-CV <em>Intelligence</em></h3>
+              <p>Convierte CVs dispersos en perfiles master comparables, detecta brechas y genera entregables profesionales consistentes. El MVP ya se abre en nortiqalab.com/val-cv.</p>
+              <ul>
+                <li>Normalización inteligente</li>
+                <li>Diagnóstico de calidad</li>
+                <li>Detección de información faltante</li>
+              </ul>
+              <a href="val-cv-intelligence.html">Conocer VAL-CV →</a>
+            </article>
+            <article class="tarjeta">
+              <span class="hud">02 · Pilotos AI</span>
+              <h3>Agentes <em>operativos</em></h3>
+              <p>Asistentes conectados a documentos, datos, APIs y herramientas que consultan, preparan y ejecutan tareas controladas.</p>
+              <ul>
+                <li>Soporte documental</li>
+                <li>Seguimiento de tareas</li>
+                <li>Flujos conectados a n8n</li>
+              </ul>
+              <a href="contacto.html">Proponer un agente →</a>
+            </article>
+            <article class="tarjeta">
+              <span class="hud">03 · Prototipo DB</span>
+              <h3>Query <em>OS</em></h3>
+              <p>Exploración de datos en lenguaje natural con acceso gobernado, validación previa y registro de cada consulta.</p>
+              <ul>
+                <li>Consultas en lenguaje natural</li>
+                <li>Fuentes permitidas</li>
+                <li>Ejecución segura y auditable</li>
+              </ul>
+              <a href="query-os.html">Pedir acceso →</a>
+            </article>
+            <article class="tarjeta">
+              <span class="hud">04 · Modular ↻</span>
+              <h3>Automatizaciones <em>IA</em></h3>
+              <p>Pipelines de clasificación, resumen, generación documental y seguimiento para reducir carga repetitiva.</p>
+              <ul>
+                <li>Clasificación automática</li>
+                <li>Reportes y borradores</li>
+                <li>Control de procesos</li>
+              </ul>
+              <a href="contacto.html">Proponer un flujo →</a>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="metodo" class="cap cap--claro" aria-labelledby="metodo-titulo">
+        <header class="cap-cabeza">
+          <p class="hud">03 / Método</p>
+          <h2 id="metodo-titulo">Primero el proceso. Después la IA.</h2>
+        </header>
+        <p>La tecnología entra cuando ya entendimos qué debe pasar, quién valida y qué tiene que quedar registrado.</p>
+        <ol class="pasos">
+          <li class="paso">
+            <span class="hud">01</span>
+            <h3>Diagnóstico operativo</h3>
+            <p>Mapeamos fricciones, tareas, documentos, datos y responsables.</p>
+          </li>
+          <li class="paso">
+            <span class="hud">02</span>
+            <h3>Diseño del flujo</h3>
+            <p>Definimos automatización, validaciones humanas, reglas y trazabilidad.</p>
+          </li>
+          <li class="paso">
+            <span class="hud">03</span>
+            <h3>Prototipo funcional</h3>
+            <p>Construimos una primera versión usable enfocada en un problema concreto.</p>
+          </li>
+          <li class="paso">
+            <span class="hud">04</span>
+            <h3>Medición y ajuste</h3>
+            <p>Evaluamos calidad, tiempo, errores, consistencia y utilidad real.</p>
+          </li>
+          <li class="paso">
+            <span class="hud">05</span>
+            <h3>Escala controlada</h3>
+            <p>Integramos y desplegamos solo después de validar el flujo.</p>
+          </li>
+        </ol>
+      </section>
+
+      <section id="arquitectura" class="cap cap--claro-2" aria-labelledby="arquitectura-titulo">
+        <div class="cap-cols cap-cols--par">
+          <div class="cap-lado">
+            <header class="cap-cabeza">
+            <p class="hud">04 / Arquitectura</p>
+            <h2 id="arquitectura-titulo">Modular por diseño. Auditable por defecto.</h2>
+            </header>
+            <div class="cap-texto">
+              <p>Combinamos la tecnología necesaria para cada caso sin sumar complejidad porque sí.</p>
+              <p>Cada componente tiene un rol, límites definidos y una señal observable.</p>
+            </div>
+          </div>
+          <div class="arq">
+          <div class="mapa" role="img" aria-label="Núcleo Nortiqa rodeado de modelos de IA, agentes, n8n, datos, APIs y logs">
+          <span class="mapa-nucleo"><strong>NQ</strong><small class="hud">Core</small></span>
+          <span class="chip mapa-item m1">Modelos IA</span>
+          <span class="chip mapa-item m2">Agentes</span>
+          <span class="chip mapa-item m3">n8n</span>
+          <span class="chip mapa-item m4">Datos</span>
+          <span class="chip mapa-item m5">APIs</span>
+          <span class="chip mapa-item m6">Logs</span>
+          </div>
+          <!-- El tablero de LEDs dibuja estas mismas palabras en un canvas.
+               `.arq-cadena` NO se borra: queda en el documento, oculta a la
+               vista pero no a los lectores de pantalla, y es de donde
+               `tablero.js` lee el texto. Un canvas no tiene contenido: si la
+               lista viviera sólo en el JS, la sección lo perdería para quien
+               no ve. -->
+          <div class="arq-cadena solo-lectores">
+          <span>Agentes operativos</span><i>◆</i>
+          <span>Automatización</span><i>◆</i>
+          <span>Datos</span><i>◆</i>
+          <span>Trazabilidad</span><i>◆</i>
+          <span>Productos IA</span>
+          </div>
+          <div class="tablero" id="tablero"></div>
+          </div>
+        </div>
+        <div class="marcas" aria-label="Tecnologías que operamos">
+          <!-- Logos de Simple Icons (simpleicons.org), CC0-1.0. Las marcas siguen
+               siendo de sus dueños; acá figuran como stack, no como sociedad. -->
+          <div class="marca-col">
+            <span class="marca on" role="img" aria-label="n8n"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.4737 5.6842c-1.1772 0-2.1663.8051-2.4468 1.8947h-2.8955c-1.235 0-2.289.893-2.492 2.111l-.1038.623a1.263 1.263 0 0 1-1.246 1.0555H11.289c-.2805-1.0896-1.2696-1.8947-2.4468-1.8947s-2.1663.8051-2.4467 1.8947H4.973c-.2805-1.0896-1.2696-1.8947-2.4468-1.8947C1.1311 9.4737 0 10.6047 0 12s1.131 2.5263 2.5263 2.5263c1.1772 0 2.1663-.8051 2.4468-1.8947h1.4223c.2804 1.0896 1.2696 1.8947 2.4467 1.8947 1.1772 0 2.1663-.8051 2.4468-1.8947h1.0008a1.263 1.263 0 0 1 1.2459 1.0555l.1038.623c.203 1.218 1.257 2.111 2.492 2.111h.3692c.2804 1.0895 1.2696 1.8947 2.4468 1.8947 1.3952 0 2.5263-1.131 2.5263-2.5263s-1.131-2.5263-2.5263-2.5263c-1.1772 0-2.1664.805-2.4468 1.8947h-.3692a1.263 1.263 0 0 1-1.246-1.0555l-.1037-.623A2.52 2.52 0 0 0 13.9607 12a2.52 2.52 0 0 0 .821-1.4794l.1038-.623a1.263 1.263 0 0 1 1.2459-1.0555h2.8955c.2805 1.0896 1.2696 1.8947 2.4468 1.8947 1.3952 0 2.5263-1.131 2.5263-2.5263s-1.131-2.5263-2.5263-2.5263m0 1.2632a1.263 1.263 0 0 1 1.2631 1.2631 1.263 1.263 0 0 1-1.2631 1.2632 1.263 1.263 0 0 1-1.2632-1.2632 1.263 1.263 0 0 1 1.2632-1.2631M2.5263 10.7368A1.263 1.263 0 0 1 3.7895 12a1.263 1.263 0 0 1-1.2632 1.2632A1.263 1.263 0 0 1 1.2632 12a1.263 1.263 0 0 1 1.2631-1.2632m6.3158 0A1.263 1.263 0 0 1 10.1053 12a1.263 1.263 0 0 1-1.2632 1.2632A1.263 1.263 0 0 1 7.579 12a1.263 1.263 0 0 1 1.2632-1.2632m10.1053 3.7895a1.263 1.263 0 0 1 1.2631 1.2632 1.263 1.263 0 0 1-1.2631 1.2631 1.263 1.263 0 0 1-1.2632-1.2631 1.263 1.263 0 0 1 1.2632-1.2632"/></svg></span>
+            <span class="marca" role="img" aria-label="Ubuntu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.61.455a3.41 3.41 0 0 0-3.41 3.41 3.41 3.41 0 0 0 3.41 3.41 3.41 3.41 0 0 0 3.41-3.41 3.41 3.41 0 0 0-3.41-3.41zM12.92.8C8.923.777 5.137 2.941 3.148 6.451a4.5 4.5 0 0 1 .26-.007 4.92 4.92 0 0 1 2.585.737A8.316 8.316 0 0 1 12.688 3.6 4.944 4.944 0 0 1 13.723.834 11.008 11.008 0 0 0 12.92.8zm9.226 4.994a4.915 4.915 0 0 1-1.918 2.246 8.36 8.36 0 0 1-.273 8.303 4.89 4.89 0 0 1 1.632 2.54 11.156 11.156 0 0 0 .559-13.089zM3.41 7.932A3.41 3.41 0 0 0 0 11.342a3.41 3.41 0 0 0 3.41 3.409 3.41 3.41 0 0 0 3.41-3.41 3.41 3.41 0 0 0-3.41-3.41zm2.027 7.866a4.908 4.908 0 0 1-2.915.358 11.1 11.1 0 0 0 7.991 6.698 11.234 11.234 0 0 0 2.422.249 4.879 4.879 0 0 1-.999-2.85 8.484 8.484 0 0 1-.836-.136 8.304 8.304 0 0 1-5.663-4.32zm11.405.928a3.41 3.41 0 0 0-3.41 3.41 3.41 3.41 0 0 0 3.41 3.41 3.41 3.41 0 0 0 3.41-3.41 3.41 3.41 0 0 0-3.41-3.41z"/></svg></span>
+          </div>
+          <div class="marca-col">
+            <span class="marca on" role="img" aria-label="PostgreSQL"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.5594 14.7228a.5269.5269 0 0 0-.0563-.1191c-.139-.2632-.4768-.3418-1.0074-.2321-1.6533.3411-2.2935.1312-2.5256-.0191 1.342-2.0482 2.445-4.522 3.0411-6.8297.2714-1.0507.7982-3.5237.1222-4.7316a1.5641 1.5641 0 0 0-.1509-.235C21.6931.9086 19.8007.0248 17.5099.0005c-1.4947-.0158-2.7705.3461-3.1161.4794a9.449 9.449 0 0 0-.5159-.0816 8.044 8.044 0 0 0-1.3114-.1278c-1.1822-.0184-2.2038.2642-3.0498.8406-.8573-.3211-4.7888-1.645-7.2219.0788C.9359 2.1526.3086 3.8733.4302 6.3043c.0409.818.5069 3.334 1.2423 5.7436.4598 1.5065.9387 2.7019 1.4334 3.582.553.9942 1.1259 1.5933 1.7143 1.7895.4474.1491 1.1327.1441 1.8581-.7279.8012-.9635 1.5903-1.8258 1.9446-2.2069.4351.2355.9064.3625 1.39.3772a.0569.0569 0 0 0 .0004.0041 11.0312 11.0312 0 0 0-.2472.3054c-.3389.4302-.4094.5197-1.5002.7443-.3102.064-1.1344.2339-1.1464.8115-.0025.1224.0329.2309.0919.3268.2269.4231.9216.6097 1.015.6331 1.3345.3335 2.5044.092 3.3714-.6787-.017 2.231.0775 4.4174.3454 5.0874.2212.5529.7618 1.9045 2.4692 1.9043.2505 0 .5263-.0291.8296-.0941 1.7819-.3821 2.5557-1.1696 2.855-2.9059.1503-.8707.4016-2.8753.5388-4.1012.0169-.0703.0357-.1207.057-.1362.0007-.0005.0697-.0471.4272.0307a.3673.3673 0 0 0 .0443.0068l.2539.0223.0149.001c.8468.0384 1.9114-.1426 2.5312-.4308.6438-.2988 1.8057-1.0323 1.5951-1.6698zM2.371 11.8765c-.7435-2.4358-1.1779-4.8851-1.2123-5.5719-.1086-2.1714.4171-3.6829 1.5623-4.4927 1.8367-1.2986 4.8398-.5408 6.108-.13-.0032.0032-.0066.0061-.0098.0094-2.0238 2.044-1.9758 5.536-1.9708 5.7495-.0002.0823.0066.1989.0162.3593.0348.5873.0996 1.6804-.0735 2.9184-.1609 1.1504.1937 2.2764.9728 3.0892.0806.0841.1648.1631.2518.2374-.3468.3714-1.1004 1.1926-1.9025 2.1576-.5677.6825-.9597.5517-1.0886.5087-.3919-.1307-.813-.5871-1.2381-1.3223-.4796-.839-.9635-2.0317-1.4155-3.5126zm6.0072 5.0871c-.1711-.0428-.3271-.1132-.4322-.1772.0889-.0394.2374-.0902.4833-.1409 1.2833-.2641 1.4815-.4506 1.9143-1.0002.0992-.126.2116-.2687.3673-.4426a.3549.3549 0 0 0 .0737-.1298c.1708-.1513.2724-.1099.4369-.0417.156.0646.3078.26.3695.4752.0291.1016.0619.2945-.0452.4444-.9043 1.2658-2.2216 1.2494-3.1676 1.0128zm2.094-3.988-.0525.141c-.133.3566-.2567.6881-.3334 1.003-.6674-.0021-1.3168-.2872-1.8105-.8024-.6279-.6551-.9131-1.5664-.7825-2.5004.1828-1.3079.1153-2.4468.079-3.0586-.005-.0857-.0095-.1607-.0122-.2199.2957-.2621 1.6659-.9962 2.6429-.7724.4459.1022.7176.4057.8305.928.5846 2.7038.0774 3.8307-.3302 4.7363-.084.1866-.1633.3629-.2311.5454zm7.3637 4.5725c-.0169.1768-.0358.376-.0618.5959l-.146.4383a.3547.3547 0 0 0-.0182.1077c-.0059.4747-.054.6489-.115.8693-.0634.2292-.1353.4891-.1794 1.0575-.11 1.4143-.8782 2.2267-2.4172 2.5565-1.5155.3251-1.7843-.4968-2.0212-1.2217a6.5824 6.5824 0 0 0-.0769-.2266c-.2154-.5858-.1911-1.4119-.1574-2.5551.0165-.5612-.0249-1.9013-.3302-2.6462.0044-.2932.0106-.5909.019-.8918a.3529.3529 0 0 0-.0153-.1126 1.4927 1.4927 0 0 0-.0439-.208c-.1226-.4283-.4213-.7866-.7797-.9351-.1424-.059-.4038-.1672-.7178-.0869.067-.276.1831-.5875.309-.9249l.0529-.142c.0595-.16.134-.3257.213-.5012.4265-.9476 1.0106-2.2453.3766-5.1772-.2374-1.0981-1.0304-1.6343-2.2324-1.5098-.7207.0746-1.3799.3654-1.7088.5321a5.6716 5.6716 0 0 0-.1958.1041c.0918-1.1064.4386-3.1741 1.7357-4.4823a4.0306 4.0306 0 0 1 .3033-.276.3532.3532 0 0 0 .1447-.0644c.7524-.5706 1.6945-.8506 2.802-.8325.4091.0067.8017.0339 1.1742.081 1.939.3544 3.2439 1.4468 4.0359 2.3827.8143.9623 1.2552 1.9315 1.4312 2.4543-1.3232-.1346-2.2234.1268-2.6797.779-.9926 1.4189.543 4.1729 1.2811 5.4964.1353.2426.2522.4522.2889.5413.2403.5825.5515.9713.7787 1.2552.0696.087.1372.1714.1885.245-.4008.1155-1.1208.3825-1.0552 1.717-.0123.1563-.0423.4469-.0834.8148-.0461.2077-.0702.4603-.0994.7662zm.8905-1.6211c-.0405-.8316.2691-.9185.5967-1.0105a2.8566 2.8566 0 0 0 .135-.0406 1.202 1.202 0 0 0 .1342.103c.5703.3765 1.5823.4213 3.0068.1344-.2016.1769-.5189.3994-.9533.6011-.4098.1903-1.0957.333-1.7473.3636-.7197.0336-1.0859-.0807-1.1721-.151zm.5695-9.2712c-.0059.3508-.0542.6692-.1054 1.0017-.055.3576-.112.7274-.1264 1.1762-.0142.4368.0404.8909.0932 1.3301.1066.887.216 1.8003-.2075 2.7014a3.5272 3.5272 0 0 1-.1876-.3856c-.0527-.1276-.1669-.3326-.3251-.6162-.6156-1.1041-2.0574-3.6896-1.3193-4.7446.3795-.5427 1.3408-.5661 2.1781-.463zm.2284 7.0137a12.3762 12.3762 0 0 0-.0853-.1074l-.0355-.0444c.7262-1.1995.5842-2.3862.4578-3.4385-.0519-.4318-.1009-.8396-.0885-1.2226.0129-.4061.0666-.7543.1185-1.0911.0639-.415.1288-.8443.1109-1.3505.0134-.0531.0188-.1158.0118-.1902-.0457-.4855-.5999-1.938-1.7294-3.253-.6076-.7073-1.4896-1.4972-2.6889-2.0395.5251-.1066 1.2328-.2035 2.0244-.1859 2.0515.0456 3.6746.8135 4.8242 2.2824a.908.908 0 0 1 .0667.1002c.7231 1.3556-.2762 6.2751-2.9867 10.5405zm-8.8166-6.1162c-.025.1794-.3089.4225-.6211.4225a.5821.5821 0 0 1-.0809-.0056c-.1873-.026-.3765-.144-.5059-.3156-.0458-.0605-.1203-.178-.1055-.2844.0055-.0401.0261-.0985.0925-.1488.1182-.0894.3518-.1226.6096-.0867.3163.0441.6426.1938.6113.4186zm7.9305-.4114c.0111.0792-.049.201-.1531.3102-.0683.0717-.212.1961-.4079.2232a.5456.5456 0 0 1-.075.0052c-.2935 0-.5414-.2344-.5607-.3717-.024-.1765.2641-.3106.5611-.352.297-.0414.6111.0088.6356.1851z"/></svg></span>
+            <span class="marca" role="img" aria-label="Let's Encrypt"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11.9914 0a.8829.8829 0 00-.8718.817v3.0209A.8829.8829 0 0012 4.7207a.8829.8829 0 00.8803-.8803V.817a.8829.8829 0 00-.889-.817zm7.7048 3.1089a.8804.8804 0 00-.5214.1742l-2.374 1.9482a.8804.8804 0 00.5592 1.5622.8794.8794 0 00.5592-.2001l2.3714-1.9506a.8804.8804 0 00-.5944-1.534zm-15.3763.0133a.8829.8829 0 00-.611 1.5206l2.37 1.9506a.876.876 0 00.5606.2001v-.002a.8804.8804 0 00.5597-1.5602L4.8277 3.2831a.8829.8829 0 00-.5078-.161zm7.6598 3.2275a5.0456 5.0456 0 00-5.0262 5.0455v1.4876H5.787a.9672.9672 0 00-.9647.9643v9.1887a.9672.9672 0 00.9647.9643H18.213a.9672.9672 0 00.9643-.9643v-9.1907a.9672.9672 0 00-.9643-.9623h-1.1684v-1.4876a5.0456 5.0456 0 00-5.0649-5.0455zm.0127 2.8933a2.1522 2.1522 0 012.1593 2.1522v1.4876H9.8473v-1.4876a2.1522 2.1522 0 012.145-2.1522zm7.3812.5033a.8829.8829 0 10.0705 1.7632h3.0267a.8829.8829 0 000-1.7609H19.444a.8829.8829 0 00-.0705-.0023zm-17.8444.0023a.8829.8829 0 000 1.7609h2.9983a.8829.8829 0 000-1.7609zm10.4596 6.7746a1.2792 1.2792 0 01.641 2.3926v1.2453a.6298.6298 0 01-1.2595 0v-1.2453a1.2792 1.2792 0 01.6185-2.3926z"/></svg></span>
+          </div>
+          <div class="marca-col">
+            <span class="marca on" role="img" aria-label="Odoo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.1002 15.7957c-1.6015 0-2.8997-1.2983-2.8997-2.8998s1.2983-2.8997 2.8997-2.8997c1.6015 0 2.8998 1.2982 2.8998 2.8997 0 1.5999-1.2979 2.8998-2.8998 2.8998zm0-1.2c.9388.0006 1.7003-.7601 1.7008-1.6989.0004-.9388-.7602-1.7003-1.699-1.7007h-.0018c-.9388.0004-1.6994.7619-1.699 1.7007.0005.9381.761 1.6985 1.699 1.699zm-6.0655 1.2c-1.6014 0-2.8997-1.2983-2.8997-2.8998s1.2983-2.8997 2.8997-2.8997c1.6015 0 2.8998 1.2982 2.8998 2.8997 0 1.5999-1.2999 2.8998-2.8998 2.8998zm0-1.2c.9389.0006 1.7003-.7601 1.7008-1.6989.0005-.9388-.7602-1.7003-1.699-1.7007h-.0018c-.9388.0004-1.6994.7619-1.699 1.7007.0005.9381.761 1.6985 1.699 1.699zM11.865 12.858c0 1.6199-1.2979 2.9378-2.8977 2.9378s-2.8998-1.314-2.8998-2.9358 1.1799-2.8597 2.8998-2.8597c.6359 0 1.2239.134 1.6998.484v-1.68a.6.6 0 0 1 1.2 0v4.0537h-.002zm-2.8977 1.7399c.9388.0005 1.7002-.7602 1.7007-1.699.0005-.9388-.7602-1.7003-1.699-1.7007h-.0017c-.9389.0004-1.6995.7619-1.699 1.7007.0004.9381.7608 1.6985 1.699 1.699zm-6.0675 1.1979C1.2983 15.7957 0 14.4974 0 12.8959s1.2983-2.8997 2.8998-2.8997 2.8997 1.2982 2.8997 2.8997c0 1.5999-1.2999 2.8998-2.8997 2.8998zm0-1.2c.9388.0006 1.7002-.7601 1.7007-1.699.0005-.9387-.7602-1.7002-1.699-1.7006h-.0017c-.9388.0004-1.6995.7619-1.699 1.7007.0004.9381.7608 1.6985 1.699 1.699z"/></svg></span>
+            <span class="marca" role="img" aria-label="Git"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.09 23.549a1.54 1.54 0 0 1-2.18 0L.451 13.089a1.54 1.54 0 0 1 0-2.179l7.191-7.19 2.733 2.733a1.85 1.85 0 0 0 .964 2.326v6.66a1.849 1.849 0 1 0 1.54 0V8.957l2.508 2.508a1.85 1.85 0 1 0 1.09-1.09l-2.634-2.634a1.85 1.85 0 0 0-2.378-2.377L8.73 2.63 10.91.451a1.54 1.54 0 0 1 2.179 0l10.459 10.46a1.54 1.54 0 0 1 0 2.179z"/></svg></span>
+          </div>
+          <div class="marca-col">
+            <span class="marca on" role="img" aria-label="Docker"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.983 11.078h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 00.186-.186V3.574a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m0 2.716h2.118a.187.187 0 00.186-.186V6.29a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.887c0 .102.082.185.185.186m-2.93 0h2.12a.186.186 0 00.184-.186V6.29a.185.185 0 00-.185-.185H8.1a.185.185 0 00-.185.185v1.887c0 .102.083.185.185.186m-2.964 0h2.119a.186.186 0 00.185-.186V6.29a.185.185 0 00-.185-.185H5.136a.186.186 0 00-.186.185v1.887c0 .102.084.185.186.186m5.893 2.715h2.118a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m-2.93 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.185.185.185m-2.964 0h2.119a.185.185 0 00.185-.185V9.006a.185.185 0 00-.184-.186h-2.12a.186.186 0 00-.186.186v1.887c0 .102.084.185.186.185m-2.92 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.082.185.185.185M23.763 9.89c-.065-.051-.672-.51-1.954-.51-.338.001-.676.03-1.01.087-.248-1.7-1.653-2.53-1.716-2.566l-.344-.199-.226.327c-.284.438-.49.922-.612 1.43-.23.97-.09 1.882.403 2.661-.595.332-1.55.413-1.744.42H.751a.751.751 0 00-.75.748 11.376 11.376 0 00.692 4.062c.545 1.428 1.355 2.48 2.41 3.124 1.18.723 3.1 1.137 5.275 1.137.983.003 1.963-.086 2.93-.266a12.248 12.248 0 003.823-1.389c.98-.567 1.86-1.288 2.61-2.136 1.252-1.418 1.998-2.997 2.553-4.4h.221c1.372 0 2.215-.549 2.68-1.009.309-.293.55-.65.707-1.046l.098-.288Z"/></svg></span>
+            <span class="marca" role="img" aria-label="Metabase"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.385 6.136c0 .807-.644 1.461-1.438 1.461s-1.438-.654-1.438-1.461.644-1.461 1.438-1.461 1.438.654 1.438 1.461zm-1.438 2.63c-.794 0-1.438.654-1.438 1.461s.644 1.461 1.438 1.461 1.438-.654 1.438-1.461-.644-1.461-1.438-1.461zm5.465-2.63c0 .807-.644 1.461-1.438 1.461s-1.438-.654-1.438-1.461.644-1.461 1.438-1.461 1.438.654 1.438 1.461zm-.35 0c0-.613-.488-1.111-1.088-1.111s-1.088.499-1.088 1.111.488 1.111 1.088 1.111 1.088-.498 1.088-1.111zm-1.088 5.592c.794 0 1.438-.654 1.438-1.461s-.644-1.461-1.438-1.461-1.438.654-1.438 1.461.643 1.461 1.438 1.461zm5.464-5.592c0 .807-.644 1.461-1.438 1.461s-1.438-.654-1.438-1.461.644-1.461 1.438-1.461 1.438.654 1.438 1.461zm-.35 0c0-.613-.488-1.111-1.088-1.111s-1.088.498-1.088 1.111S11.4 7.247 12 7.247s1.088-.498 1.088-1.111zm.35-4.675c0 .807-.644 1.461-1.438 1.461s-1.438-.654-1.438-1.461S11.206 0 12 0s1.438.654 1.438 1.461zm-.35 0C13.088.848 12.6.35 12 .35s-1.088.498-1.088 1.111S11.4 2.572 12 2.572s1.088-.498 1.088-1.111zm.35 8.806c0 .807-.644 1.461-1.438 1.461s-1.438-.654-1.438-1.461.644-1.461 1.438-1.461 1.438.654 1.438 1.461zm-.35 0c0-.613-.488-1.111-1.088-1.111s-1.088.498-1.088 1.111.488 1.111 1.088 1.111 1.088-.499 1.088-1.111zm4.376-4.131c0 .807-.644 1.461-1.438 1.461s-1.438-.654-1.438-1.461.644-1.461 1.438-1.461 1.438.654 1.438 1.461zm-.35 0c0-.613-.488-1.111-1.088-1.111s-1.088.498-1.088 1.111.488 1.111 1.088 1.111 1.088-.498 1.088-1.111zm2.939 1.461c.794 0 1.438-.654 1.438-1.461s-.644-1.461-1.438-1.461-1.438.654-1.438 1.461.644 1.461 1.438 1.461zm-4.027 1.209c-.794 0-1.438.654-1.438 1.461s.644 1.461 1.438 1.461 1.438-.654 1.438-1.461-.643-1.461-1.438-1.461zm4.027 0c-.794 0-1.438.654-1.438 1.461s.644 1.461 1.438 1.461 1.438-.654 1.438-1.461-.644-1.461-1.438-1.461zM3.947 12.857a1.45 1.45 0 0 0-1.438 1.461c0 .807.644 1.461 1.438 1.461s1.438-.654 1.438-1.461a1.45 1.45 0 0 0-1.438-1.461zm5.465 1.5c0 .807-.644 1.461-1.438 1.461s-1.438-.654-1.438-1.461.644-1.461 1.438-1.461 1.438.655 1.438 1.461zm-.35 0c0-.613-.488-1.111-1.088-1.111s-1.088.498-1.088 1.111.488 1.111 1.088 1.111 1.088-.498 1.088-1.111zM12 12.896c-.794 0-1.438.654-1.438 1.461s.644 1.461 1.438 1.461 1.438-.654 1.438-1.461-.644-1.461-1.438-1.461zm5.464 1.461c0 .807-.644 1.461-1.438 1.461s-1.438-.654-1.438-1.461.644-1.461 1.438-1.461 1.438.655 1.438 1.461zm-.35 0c0-.613-.488-1.111-1.088-1.111s-1.088.498-1.088 1.111.488 1.111 1.088 1.111 1.088-.498 1.088-1.111zm2.939-1.461c-.794 0-1.438.654-1.438 1.461s.644 1.461 1.438 1.461 1.438-.654 1.438-1.461-.644-1.461-1.438-1.461zM3.947 16.948c-.794 0-1.438.654-1.438 1.461s.644 1.461 1.438 1.461 1.438-.654 1.438-1.461-.644-1.461-1.438-1.461zm5.465 1.5c0 .807-.644 1.461-1.438 1.461s-1.438-.654-1.438-1.461.644-1.461 1.438-1.461 1.438.654 1.438 1.461zm-.35 0c0-.613-.488-1.111-1.088-1.111s-1.088.498-1.088 1.111.488 1.111 1.088 1.111 1.088-.498 1.088-1.111zm4.376 0c0 .807-.644 1.461-1.438 1.461s-1.438-.654-1.438-1.461.644-1.461 1.438-1.461 1.438.654 1.438 1.461zm-.35 0c0-.613-.488-1.111-1.088-1.111s-1.088.498-1.088 1.111.488 1.111 1.088 1.111 1.088-.498 1.088-1.111zm.35 4.091c0 .807-.644 1.461-1.438 1.461s-1.438-.654-1.438-1.461.644-1.461 1.438-1.461 1.438.654 1.438 1.461zm-.35 0c0-.613-.488-1.111-1.088-1.111s-1.088.498-1.088 1.111S11.4 23.65 12 23.65s1.088-.498 1.088-1.111zm4.376-4.091c0 .807-.644 1.461-1.438 1.461s-1.438-.654-1.438-1.461.644-1.461 1.438-1.461 1.438.654 1.438 1.461zm-.35 0c0-.613-.488-1.111-1.088-1.111s-1.088.498-1.088 1.111.488 1.111 1.088 1.111 1.088-.498 1.088-1.111zm2.939-1.461c-.794 0-1.438.654-1.438 1.461s.644 1.461 1.438 1.461 1.438-.654 1.438-1.461-.644-1.461-1.438-1.461z"/></svg></span>
+          </div>
+          <div class="marca-col">
+            <span class="marca on" role="img" aria-label="Python"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.25.18l.9.2.73.26.59.3.45.32.34.34.25.34.16.33.1.3.04.26.02.2-.01.13V8.5l-.05.63-.13.55-.21.46-.26.38-.3.31-.33.25-.35.19-.35.14-.33.1-.3.07-.26.04-.21.02H8.77l-.69.05-.59.14-.5.22-.41.27-.33.32-.27.35-.2.36-.15.37-.1.35-.07.32-.04.27-.02.21v3.06H3.17l-.21-.03-.28-.07-.32-.12-.35-.18-.36-.26-.36-.36-.35-.46-.32-.59-.28-.73-.21-.88-.14-1.05-.05-1.23.06-1.22.16-1.04.24-.87.32-.71.36-.57.4-.44.42-.33.42-.24.4-.16.36-.1.32-.05.24-.01h.16l.06.01h8.16v-.83H6.18l-.01-2.75-.02-.37.05-.34.11-.31.17-.28.25-.26.31-.23.38-.2.44-.18.51-.15.58-.12.64-.1.71-.06.77-.04.84-.02 1.27.05zm-6.3 1.98l-.23.33-.08.41.08.41.23.34.33.22.41.09.41-.09.33-.22.23-.34.08-.41-.08-.41-.23-.33-.33-.22-.41-.09-.41.09zm13.09 3.95l.28.06.32.12.35.18.36.27.36.35.35.47.32.59.28.73.21.88.14 1.04.05 1.23-.06 1.23-.16 1.04-.24.86-.32.71-.36.57-.4.45-.42.33-.42.24-.4.16-.36.09-.32.05-.24.02-.16-.01h-8.22v.82h5.84l.01 2.76.02.36-.05.34-.11.31-.17.29-.25.25-.31.24-.38.2-.44.17-.51.15-.58.13-.64.09-.71.07-.77.04-.84.01-1.27-.04-1.07-.14-.9-.2-.73-.25-.59-.3-.45-.33-.34-.34-.25-.34-.16-.33-.1-.3-.04-.25-.02-.2.01-.13v-5.34l.05-.64.13-.54.21-.46.26-.38.3-.32.33-.24.35-.2.35-.14.33-.1.3-.06.26-.04.21-.02.13-.01h5.84l.69-.05.59-.14.5-.21.41-.28.33-.32.27-.35.2-.36.15-.36.1-.35.07-.32.04-.28.02-.21V6.07h2.09l.14.01zm-6.47 14.25l-.23.33-.08.41.08.41.23.33.33.23.41.08.41-.08.33-.23.23-.33.08-.41-.08-.41-.23-.33-.33-.23-.41-.08-.41.08z"/></svg></span>
+            <span class="marca" role="img" aria-label="Nginx"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0L1.605 6v12L12 24l10.395-6V6L12 0zm6 16.59c0 .705-.646 1.29-1.529 1.29-.631 0-1.351-.255-1.801-.81l-6-7.141v6.66c0 .721-.57 1.29-1.274 1.29H7.32c-.721 0-1.29-.6-1.29-1.29V7.41c0-.705.63-1.29 1.5-1.29.646 0 1.38.255 1.83.81l5.97 7.141V7.41c0-.721.6-1.29 1.29-1.29h.075c.72 0 1.29.6 1.29 1.29v9.18H18z"/></svg></span>
+          </div>
+        </div>
+      </section>
+
+      <section id="aplicaciones" class="cap cap--claro" aria-labelledby="aplicaciones-titulo">
+        <header class="cap-cabeza">
+          <p class="hud">05 / Aplicaciones</p>
+          <h2 id="aplicaciones-titulo">Problemas reales. Resultados observables.</h2>
+        </header>
+        <!-- La terminal REEMPLAZA a las cinco tarjetas: los títulos pasan a
+             ser las pestañas y lo que decía cada tarjeta lo escribe la
+             terminal. Por eso no hay cifras inventadas — el texto es el que
+             ya estaba, partido en las líneas que la coma separaba. -->
+        <div class="terminal" id="terminal">
+          <div class="term-marco">
+            <div class="term-caras">
+              <div class="term-panel" role="tabpanel" id="panel-talento" aria-labelledby="tab-talento" tabindex="0">
+                <p class="term-orden"><span class="term-signo" aria-hidden="true">$</span><span class="term-cmd">nortiqa talento</span></p>
+                <div class="term-salida" role="log" aria-live="polite">
+                  <p class="term-linea term-hueco" data-espera="200">&nbsp;</p>
+                  <p class="term-linea" data-espera="420">normalización de CVs</p>
+                  <p class="term-linea" data-espera="260">análisis de perfiles</p>
+                  <p class="term-linea" data-espera="260">comparación documentada de candidatos</p>
+                </div>
+                <p class="term-cola"><span class="term-signo" aria-hidden="true">$</span></p>
+              </div>
+              <div class="term-panel" role="tabpanel" id="panel-operaciones" aria-labelledby="tab-operaciones" tabindex="0" hidden>
+                <p class="term-orden"><span class="term-signo" aria-hidden="true">$</span><span class="term-cmd">nortiqa operaciones</span></p>
+                <div class="term-salida" role="log" aria-live="polite">
+                  <p class="term-linea term-hueco" data-espera="200">&nbsp;</p>
+                  <p class="term-linea" data-espera="420">seguimiento de tareas</p>
+                  <p class="term-linea" data-espera="260">lectura documental</p>
+                  <p class="term-linea" data-espera="260">minutas</p>
+                  <p class="term-linea" data-espera="260">control de estados</p>
+                </div>
+                <p class="term-cola"><span class="term-signo" aria-hidden="true">$</span></p>
+              </div>
+              <div class="term-panel" role="tabpanel" id="panel-datos" aria-labelledby="tab-datos" tabindex="0" hidden>
+                <p class="term-orden"><span class="term-signo" aria-hidden="true">$</span><span class="term-cmd">nortiqa datos</span></p>
+                <div class="term-salida" role="log" aria-live="polite">
+                  <p class="term-linea term-hueco" data-espera="200">&nbsp;</p>
+                  <p class="term-linea" data-espera="420">consulta en lenguaje natural</p>
+                  <p class="term-linea" data-espera="260">reporting</p>
+                  <p class="term-linea" data-espera="260">soporte a decisiones operativas</p>
+                </div>
+                <p class="term-cola"><span class="term-signo" aria-hidden="true">$</span></p>
+              </div>
+              <div class="term-panel" role="tabpanel" id="panel-administracion" aria-labelledby="tab-administracion" tabindex="0" hidden>
+                <p class="term-orden"><span class="term-signo" aria-hidden="true">$</span><span class="term-cmd">nortiqa administracion</span></p>
+                <div class="term-salida" role="log" aria-live="polite">
+                  <p class="term-linea term-hueco" data-espera="200">&nbsp;</p>
+                  <p class="term-linea" data-espera="420">documentos</p>
+                  <p class="term-linea" data-espera="260">resúmenes</p>
+                  <p class="term-linea" data-espera="260">plantillas</p>
+                  <p class="term-linea" data-espera="260">expedientes internos consistentes</p>
+                </div>
+                <p class="term-cola"><span class="term-signo" aria-hidden="true">$</span></p>
+              </div>
+              <div class="term-panel" role="tabpanel" id="panel-comercial" aria-labelledby="tab-comercial" tabindex="0" hidden>
+                <p class="term-orden"><span class="term-signo" aria-hidden="true">$</span><span class="term-cmd">nortiqa comercial</span></p>
+                <div class="term-salida" role="log" aria-live="polite">
+                  <p class="term-linea term-hueco" data-espera="200">&nbsp;</p>
+                  <p class="term-linea" data-espera="420">clasificación de oportunidades</p>
+                  <p class="term-linea" data-espera="260">propuestas</p>
+                  <p class="term-linea" data-espera="260">seguimiento de contactos</p>
+                </div>
+                <p class="term-cola"><span class="term-signo" aria-hidden="true">$</span></p>
+              </div>
+            </div>
+            <div class="term-barra">
+              <div class="term-tabs" role="tablist" aria-label="Aplicaciones">
+                <button class="term-tab on" role="tab" id="tab-talento" aria-controls="panel-talento" aria-selected="true" tabindex="0">Talento</button>
+                <button class="term-tab" role="tab" id="tab-operaciones" aria-controls="panel-operaciones" aria-selected="false" tabindex="-1">Operaciones</button>
+                <button class="term-tab" role="tab" id="tab-datos" aria-controls="panel-datos" aria-selected="false" tabindex="-1">Datos</button>
+                <button class="term-tab" role="tab" id="tab-administracion" aria-controls="panel-administracion" aria-selected="false" tabindex="-1">Administración</button>
+                <button class="term-tab" role="tab" id="tab-comercial" aria-controls="panel-comercial" aria-selected="false" tabindex="-1">Comercial</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="roadmap" class="cap cap--claro-2" aria-labelledby="roadmap-titulo">
+        <header class="cap-cabeza">
+          <p class="hud">06 / Roadmap</p>
+          <h2 id="roadmap-titulo">Del prototipo al producto.</h2>
+        </header>
+        <p class="etapa">
+          <small class="hud">Etapa actual</small>
+          <strong>MVP / Prototipo avanzado</strong>
+        </p>
+        <div class="tarjetas">
+          <article class="tarjeta">
+            <span class="hud">01</span>
+            <h3>Prototipos funcionales</h3>
+            <p>Validar flujo, utilidad y calidad de salida.</p>
+          </article>
+          <article class="tarjeta">
+            <span class="hud">02</span>
+            <h3>Pilotos controlados</h3>
+            <p>Usuarios reales, medición y ajuste operativo.</p>
+          </article>
+          <article class="tarjeta">
+            <span class="hud">03</span>
+            <h3>Producto replicable</h3>
+            <p>Arquitectura, onboarding y módulos reutilizables.</p>
+          </article>
+          <article class="tarjeta">
+            <span class="hud">04</span>
+            <h3>Escala cloud</h3>
+            <p>Seguridad, costos y despliegue multi-cliente.</p>
+          </article>
+        </div>
+        <div class="franja-partners">
+          <p>Buscamos partners y programas que aceleren infraestructura, evaluación de modelos, seguridad y despliegue.</p>
+          <div class="partners" aria-label="Partners y programas">
+            <!-- Logos a color de gilbarbara/logos, CC0-1.0. Las marcas son de
+                 sus dueños: acá figuran como programas a los que se aspira, no
+                 como acuerdos vigentes — lo dice el párrafo de al lado. -->
+            <img class="partner partner--ms"  src="assets/marcas/microsoft.svg"    alt="Microsoft"    width="512" height="110">
+            <img class="partner partner--gcp" src="assets/marcas/google-cloud.svg" alt="Google Cloud" width="256" height="206">
+            <img class="partner partner--aws" src="assets/marcas/aws.svg"          alt="AWS"          width="256" height="153">
+            <img class="partner partner--nv"  src="assets/marcas/nvidia.svg"       alt="NVIDIA"       width="512" height="98">
+          </div>
+        </div>
+      </section>
+
+      <section id="contacto" class="cap cap--cierre" aria-labelledby="contacto-titulo">
+        <header class="cap-cabeza">
+          <p class="hud">07 / Conversemos</p>
+          <h2 id="contacto-titulo">¿Qué proceso querés transformar?</h2>
+        </header>
+        <p>Si es repetitivo, documental, operativo o intensivo en información, podemos convertirlo en un flujo claro, trazable y medible.</p>
+        <div class="acciones">
+          <a href="contacto.html">Proponer un piloto ↗</a>
+          <a href="mailto:hola@nortiqalab.com">hola@nortiqalab.com →</a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="pie-marca">
+        <a href="index.html" class="brand">NORTIQA<small>Sistemas de Inteligencia Organizacional</small></a>
+        <p>Inteligencia para organizaciones que evolucionan.</p>
+      </div>
+      <nav class="pie-links" aria-label="Pie de página">
+        <a href="productos-ia.html">Productos</a>
+        <a href="index.html#metodo">Método</a>
+        <a href="contacto.html">Contacto</a>
+        <a href="programas-startup-ia.html">Programas</a>
+        <a href="privacidad.html">Privacidad</a>
+        <a href="aviso-legal.html">Aviso legal</a>
+      </nav>
+      <span class="hud">© 2026 Nortiqa Lab · Argentina · Construyendo desde el sur</span>
+
+      <!-- Una empresa que vende observabilidad muestra la suya. -->
+      <dl class="medicion">
+        <div><dt>Dependencias</dt><dd id="m-deps">0</dd></div>
+        <div><dt>Peso propio</dt><dd id="m-peso">—</dd></div>
+        <div><dt>Listo en</dt><dd id="m-carga">—</dd></div>
+        <div><dt>Nodos DOM</dt><dd id="m-nodos">—</dd></div>
+      </dl>
+    </footer>
+
+    <div id="estado" class="hud">
+      <span><i class="senal" aria-hidden="true"></i> Capacidad emergente · módulo <b id="e-foco">01</b></span>
+      <span class="solo-ancho">Desplazá para explorar</span>
+      <span><span class="solo-ancho">Render</span> <b id="e-fps">—</b> fps</span>
+    </div>
+  </body>
+</html>
