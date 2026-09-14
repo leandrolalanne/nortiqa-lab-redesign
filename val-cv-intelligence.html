@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex, nofollow">
     <title>VAL-CV Intelligence – Nortiqa Lab</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <script src="assets/js/app.js" defer></script>
   </head>
   <body>
     <a href="#contenido">Saltar al contenido</a>
@@ -13,7 +14,11 @@
       <a href="index.html" aria-label="Nortiqa, inicio">
               NORTIQA<small> Sistemas de Inteligencia Organizacional</small>
       </a>
-      <nav aria-label="Principal">
+      <button type="button" class="hamburguesa" aria-expanded="false" aria-controls="nav-principal">
+        <span class="hamburguesa-lineas" aria-hidden="true"></span>
+        <span class="solo-lectores">Menú</span>
+      </button>
+      <nav aria-label="Principal" id="nav-principal">
         <div id="nav-links">
           <a href="productos-ia.html">Productos</a>
           <a href="index.html#metodo">Método</a>
@@ -33,16 +38,16 @@
       </section>
       <section>
         <a href="https://nortiqalab.com/val-cv/">
-          <img src="assets/val-cv.png" alt="Interfaz real de VAL-CV Intelligence">
+          <img src="assets/img/val-cv.png" alt="Interfaz real de VAL-CV Intelligence">
         </a>
-         Interfaz real · nortiqalab.com/val-cv </section>
+          Interfaz real · nortiqalab.com/val-cv </section>
       <section>
         <p>Estado</p>
         <h2>MVP funcional. Ya se puede abrir.</h2>
         <p>El formateador ya corre en nortiqalab.com/val-cv. Lo usamos para validar flujo, salida documental y aprendizaje del sistema antes de una versión comercial.</p>
         <p>No es un parser genérico de CVs. Es un flujo con plantilla master, brechas detectadas y criterio reutilizable después de cada corrección.</p>
                 
-                     Normalización  Diagnóstico  Trazabilidad  Control humano 
+                Normalización  Diagnóstico  Trazabilidad  Control humano 
             
         
     </section>

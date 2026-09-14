@@ -58,8 +58,8 @@
       "origen": "Google Fonts (fonts.gstatic.com)",
       "licencia": "SIL Open Font License 1.1",
       "archivos": [
-        "assets/fuentes/hanken-grotesk-latin.woff2",
-        "assets/fuentes/hanken-grotesk-latin-ext.woff2"
+        "assets/fonts/hanken-grotesk-latin.woff2",
+        "assets/fonts/hanken-grotesk-latin-ext.woff2"
       ],
       "nota": "Variable 100-900: dos archivos para toda la familia.",
       "sha256": {
@@ -71,9 +71,9 @@
       "nombre": "JetBrains Mono",
       "origen": "https://github.com/JetBrains/JetBrainsMono",
       "licencia": "SIL Open Font License 1.1",
-      "texto_licencia": "assets/fuentes/LICENCIA-jetbrains-mono.txt",
+      "texto_licencia": "assets/licenses/jetbrains-mono.txt",
       "archivos": [
-        "assets/fuentes/jetbrains-mono-latin.woff2"
+        "assets/fonts/jetbrains-mono-latin.woff2"
       ],
       "nota": "Solo la terminal de Aplicaciones. Subconjunto latino y sin tablas de sustitucion: de 90 KB a 8,3. Las ligaduras se quitaron a proposito — convertirian un `--flag` en una raya.",
       "sha256": {
@@ -84,13 +84,17 @@
       "nombre": "Lucide",
       "origen": "https://lucide.dev  ·  github.com/lucide-icons/lucide",
       "licencia": "ISC",
-      "texto_licencia": "assets/iconos/LICENCIA-lucide.txt",
+      "texto_licencia": "assets/licenses/lucide.txt",
       "usados": [
         "layout-grid",
         "target",
         "diamond",
         "gauge",
-        "trending-up"
+        "trending-up",
+        "file-user",
+        "bot",
+        "database-zap",
+        "workflow"
       ],
       "donde": "index.html, incrustados en la tira del hero",
       "nota": "Incrustados y no como <img> para que tomen currentColor del capitulo. Trazo bajado de 2 a 1.5."
@@ -109,20 +113,48 @@
         "docker",
         "metabase",
         "python",
-        "nginx"
+        "nginx",
+        "github",
+        "claude",
+        "googlegemini",
+        "opencode"
       ],
       "donde": "index.html, carrusel de tecnologias en #arquitectura",
       "nota": "Monocromos, incrustados, tomando color del capitulo. Barra a todo el ancho. Son el stack que el lab opera segun la infra de srv-erp."
+    },
+    "logos_ia": {
+      "nombre": "Logos de IA en la barra de tecnologías",
+      "_nota": "Los tres de Simple Icons están arriba. Acá van los que hubo que buscar en otra fuente porque Simple Icons no los tiene.",
+      "chatgpt": {
+        "origen": "github.com/gilbarbara/logos — logos/openai-icon.svg",
+        "licencia": "CC0-1.0",
+        "nota": "Una sola ruta monocroma. Simple Icons no tiene el de OpenAI."
+      },
+      "openclaw": {
+        "origen": "github.com/openclaw/openclaw — ui/public/favicon.svg",
+        "licencia": "MIT (del repositorio)",
+        "nota": "APLANADA del favicon del proyecto: fuera el degradado y la animacion SMIL. Los OJOS son elementos <circle>, no <path>: una primera extraccion que solo tomo rutas los perdio y quedaba un bicho sin cara. Van como huecos de una <mask>, que es la unica forma de calarlos manteniendo una sola tinta sobre cualquier fondo. La MIT del repositorio cubre el codigo, no la marca."
+      },
+      "hermes": {
+        "origen": "hermes-agent.nousresearch.com — el favicon que sirve el sitio en vivo. El vector sale de web-assets.nousresearch.com/.../hermes-landing/nous-girl-badge.svg",
+        "licencia": "Marca de Nous Research. Sin licencia abierta: figura como tecnología, no como sociedad.",
+        "nota": "OJO 1: el website/static/img/favicon.svg DEL REPOSITORIO esta desactualizado -es el caracter U+2624- y no es lo que el sitio publica. El logo real es la ilustracion que sirve hermes-agent.nousresearch.com. OJO 2: la ruta NO se puede redondear. Se intento y rompio el dibujo: el logo es un badge con la figura CALADA, y el calado depende de precision por debajo de la centesima. Redondeando a 2 decimales la tinta pasaba de 57% a 98,7% -un bloque solido- y a 1 decimal, 99,2%. Va con sus 45.101 bytes intactos. Quitarle el azul propio para que herede el color de la barra si es seguro."
+      },
+      "aws": {
+        "origen": "assets/img/marcas/aws.svg — gilbarbara/logos, el MISMO archivo que usa la tira de partners",
+        "licencia": "CC0-1.0 (el trazado). La marca es de Amazon.",
+        "nota": "Simple Icons NO tiene AWS: Amazon pidio que lo sacaran. Se reusa el archivo que ya viaja con el sitio, inline y sin sus dos colores (#252F3E y #FF9900) para que herede el gris de la barra. Reemplaza a Hetzner."
+      }
     },
     "logos_partners": {
       "nombre": "gilbarbara/logos",
       "origen": "https://github.com/gilbarbara/logos",
       "licencia": "CC0-1.0",
       "archivos": [
-        "assets/marcas/aws.svg",
-        "assets/marcas/google-cloud.svg",
-        "assets/marcas/microsoft.svg",
-        "assets/marcas/nvidia.svg"
+        "assets/img/marcas/aws.svg",
+        "assets/img/marcas/google-cloud.svg",
+        "assets/img/marcas/microsoft.svg",
+        "assets/img/marcas/nvidia.svg"
       ],
       "donde": "index.html, fila de partners en #roadmap",
       "nota": "A COLOR y como <img>: son marcas ajenas, conservan su color. Alto ajustado a mano por logo para igualar peso optico.",
@@ -132,6 +164,38 @@
         "google-cloud.svg": "a7cc972c92cdc55a369d1509e6e20383a8a6372d18b441d414e2395af4c6677c",
         "microsoft.svg": "bb4e29fe2cdc2e80e39c3f6c10b54ea59f66ca0fbf23934ef0cc6a47dad93082",
         "nvidia.svg": "5a7d8491e42d335210691072118ed3a17b056e0c98882903af6b2133cb07ddeb"
+      }
+    },
+    "componentes_ui": {
+      "_nota": "Efectos portados de bibliotecas de componentes. Ninguno trae la biblioteca: se reescribio el mecanismo a CSS y JS sin dependencias, que es la regla del proyecto.",
+      "terminal": {
+        "nombre": "terminal-animation",
+        "origen": "https://cult-ui.com/docs/components/terminal-animation",
+        "licencia": "MIT",
+        "donde": "assets/js/terminal.js — seccion 05, Aplicaciones",
+        "nota": "De React a vanilla. Se corrigio un error del original: tipea con command.slice(0, n), asi que los caracteres no escritos no existen en el DOM. Aca se anima el ancho en `ch` y el texto esta entero desde el vamos."
+      },
+      "tablero_led": {
+        "nombre": "lightboard",
+        "origen": "https://cult-ui.com/docs/components/lightboard",
+        "licencia": "MIT",
+        "donde": "assets/js/tablero.js — seccion 04, Arquitectura",
+        "nota": "De React a vanilla. Corregido un error del original: al escalar la fuente hace cell === '1' ? '1' : '3', o sea que las celdas APAGADAS quedan en el color mas brillante y el texto sale invertido."
+      },
+      "aro_nucleo": {
+        "nombre": "lucky-falcon-75",
+        "autor": "xXJollyHAKERXx",
+        "origen": "https://uiverse.io/xXJollyHAKERXx/lucky-falcon-75",
+        "licencia": "MIT",
+        "donde": "assets/css/styles.css — el aro del nucleo NQ en #arquitectura",
+        "nota": "Se porto el MECANISMO, no la paleta: un disco con degradado que gira y otro encima que le tapa el centro; el aro es lo que sobra de tapar un disco con otro. El violeta y el cian del original se reemplazaron por el oro y el verde agua del bisel del propio nucleo. El disco de adentro pasa de rgb(36,36,36) a var(--cap-fondo) porque ese gris no era color sino el fondo de la pagina de uiverse."
+      },
+      "onda": {
+        "nombre": "fondo de onda",
+        "origen": "https://codepen.io/yukiloz7/pen/yLgYpWM",
+        "licencia": "MIT (CodePen, por defecto)",
+        "donde": "FUERA DEL SITIO — ../nortiqa-taller/onda.js",
+        "nota": "Se implemento a mano y se saco del roadmap. Se conserva en el taller."
       }
     }
   }

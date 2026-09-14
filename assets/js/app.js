@@ -102,9 +102,28 @@
     .filter(Boolean);
 
   function marcar(id) {
-    enlaces.forEach(function (a) {
-      a.setAttribute('aria-current', a.getAttribute('href') === '#' + id ? 'true' : 'false');
+    var n = 0;
+    enlaces.forEach(function (a, i) {
+      var actual = a.getAttribute('href') === '#' + id;
+      a.setAttribute('aria-current', actual ? 'true' : 'false');
+      if (actual) n = i + 1;
     });
+    // El número de la barra sale del EPÍGRAFE de la sección —el «04 /» que se
+    // ve arriba del titular—, no de la posición en el rail: el rail tiene ocho
+    // entradas porque incluye INICIO, y las secciones se numeran 01 a 07 desde
+    // Enfoque. Tomándolo del rail quedaría corrido en uno respecto de lo que
+    // el visitante está leyendo.
+    //
+    // Antes venía de `escena.foco`, que es la distancia al centro de la losa
+    // encendida en la grilla 3D del hero: cambiaba sola cada segundo y no
+    // tenía relación con la sección.
+    var b = document.getElementById('e-foco');
+    if (b) {
+      var sec = document.getElementById(id);
+      var ep  = sec && sec.querySelector('.hud');
+      var num = ep && ep.textContent.match(/^\s*(\d+)/);
+      b.textContent = num ? num[1] : '00';        // el hero no tiene número
+    }
   }
 
   /* -----------------------------------------------------------------------
@@ -197,21 +216,91 @@
   addEventListener('load', alDesplazar);
 
   /* -----------------------------------------------------------------------
+     Las etapas de Roadmap
+     -----------------------------------------------------------------------
+     Una marca, una sola vez, cuando la sección entra: el CSS se ocupa del
+     resto. Se desconecta enseguida — si se reanimara en cada pasada, subir y
+     bajar por la página dejaría las etapas parpadeando. */
+
+  var roadmap = document.getElementById('roadmap');
+  if (roadmap && 'IntersectionObserver' in window &&
+      !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    var vigiaRoadmap = new IntersectionObserver(function (e) {
+      for (var i = 0; i < e.length; i++) {
+        if (!e[i].isIntersecting) continue;
+        vigiaRoadmap.disconnect();
+        roadmap.classList.add('en-vista');
+      }
+    }, { threshold: 0.2 });
+    vigiaRoadmap.observe(roadmap);
+  }
+
+  /* -----------------------------------------------------------------------
+     El menú de hamburguesa
+     -----------------------------------------------------------------------
+     El estado vive en UNA sola variable —la clase `.abierto` del encabezado— y
+     `aria-expanded` la refleja. No hay un segundo booleano en JS que pueda
+     desincronizarse del DOM.
+
+     Se cierra de cuatro maneras, que es lo que un menú de teléfono tiene que
+     hacer: tocando el botón, tocando un enlace, con Escape, y tocando fuera.
+     Las dos últimas son las que más se olvidan y son las que más se usan. */
+
+  var cabecera   = document.querySelector('body > header');
+  var hamburguesa = cabecera && cabecera.querySelector('.hamburguesa');
+  var navPral     = document.getElementById('nav-principal');
+
+  if (hamburguesa && navPral) {
+    var abrirMenu = function (si) {
+      cabecera.classList.toggle('abierto', si);
+      hamburguesa.setAttribute('aria-expanded', si ? 'true' : 'false');
+    };
+
+    hamburguesa.addEventListener('click', function () {
+      abrirMenu(!cabecera.classList.contains('abierto'));
+    });
+
+    // Al tocar un enlace: los de otra página navegan igual, pero los que son
+    // un ancla de ESTA página no disparan nada y el panel quedaría abierto
+    // tapando justo lo que el visitante fue a ver.
+    navPral.addEventListener('click', function (e) {
+      if (e.target.closest('a')) abrirMenu(false);
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape' || !cabecera.classList.contains('abierto')) return;
+      abrirMenu(false);
+      hamburguesa.focus();     // el foco vuelve a donde estaba, no al principio
+    });
+
+    document.addEventListener('pointerdown', function (e) {
+      if (!cabecera.classList.contains('abierto')) return;
+      if (!cabecera.contains(e.target)) abrirMenu(false);
+    });
+
+    // Si la ventana se agranda hasta el menú de escritorio con el panel
+    // abierto, el panel desaparece por CSS pero `aria-expanded` seguiría
+    // diciendo `true`: un lector de pantalla anunciaría un menú abierto que no
+    // existe.
+    var anchoMenu = matchMedia('(max-width: 48rem)');
+    var alCambiarAncho = function (m) { if (!m.matches) abrirMenu(false); };
+    if (anchoMenu.addEventListener) anchoMenu.addEventListener('change', alCambiarAncho);
+    else anchoMenu.addListener(alCambiarAncho);
+  }
+
+  /* -----------------------------------------------------------------------
      4. Barra de estado
      ----------------------------------------------------------------------- */
 
   var eFps  = $('#e-fps');
-  var eFoco = $('#e-foco');
 
   if (escena && !reduce) {
     setInterval(function () {
       if (document.hidden) return;
       if (eFps)  eFps.textContent  = escena.dps ? escena.dps : '—';
-      if (eFoco) eFoco.textContent = ('0' + (escena.foco + 1)).slice(-2);
     }, 500);
   } else if (escena) {
     if (eFps)  eFps.textContent  = '0';
-    if (eFoco) eFoco.textContent = ('0' + (escena.foco + 1)).slice(-2);
   }
 
   /* -----------------------------------------------------------------------
@@ -227,27 +316,105 @@
     set('m-nodos', document.getElementsByTagName('*').length.toLocaleString('es-AR'));
     set('m-deps', '0');
 
-    // Peso propio, todo incluido. Antes se descontaba la tipografía porque
-    // venía de Google; ahora viaja con el sitio, así que cuenta.
-    var recursos = performance.getEntriesByType('resource');
-    var red = recursos.reduce(function (n, r) { return n + (r.encodedBodySize || r.decodedBodySize || 0); }, 0);
-    var doc = new Blob([document.documentElement.outerHTML]).size;
+    // PESO PROPIO. Sale de la Navigation/Resource Timing: los bytes que el
+    // navegador informa de cada recurso, más el documento.
+    //
+    // Acá hubo una lista de archivos escrita a mano que, si el navegador no
+    // informaba bytes, los pedía con `fetch` y los sumaba. Dos cosas mal:
+    //
+    //  · La lista se quedó vieja —le faltaban `terminal.js`, `tablero.js` y la
+    //    monoespaciada, 22 KB— porque nada la obligaba a actualizarse.
+    //  · Y sobre todo: NUNCA funcionó donde hacía falta. Se usaba sólo con
+    //    `file://`, y ahí `fetch` está bloqueado por origen. Los pedidos
+    //    fallaban, el `catch` devolvía 0 para cada uno y quedaba el documento
+    //    solo: informaba 104 KB cuando el sitio pesa 316.
+    //
+    // Con `file://` no hay forma de medirlo —ni `fetch` ni `cssRules`—, así
+    // que ahí vale el número anotado en `data-peso`, que el HTML ya trae
+    // escrito y una prueba mantiene al día.
+    var red = performance.getEntriesByType('resource')
+      .reduce(function (n, r) { return n + (r.encodedBodySize || r.decodedBodySize || 0); }, 0);
 
     if (red) {
+      var doc = new Blob([document.documentElement.outerHTML]).size;
       set('m-peso', ((red + doc) / 1024).toFixed(0) + ' KB');
-    } else {
-      // Con file:// el navegador no informa bytes: los medimos nosotros.
-      Promise.all(['styles.css', 'app.js', 'scene.js', 'haz.js', 'marcas.js',
-                   'assets/fuentes/hanken-grotesk-latin.woff2',
-                   'assets/fuentes/hanken-grotesk-latin-ext.woff2'].map(function (f) {
-        return fetch(f).then(function (r) { return r.blob(); })
-                       .then(function (b) { return b.size; })
-                       .catch(function () { return 0; });
-      })).then(function (tam) {
-        var suma = tam.reduce(function (a, b) { return a + b; }, doc);
-        set('m-peso', (suma / 1024).toFixed(0) + ' KB');
-      }).catch(function () { set('m-peso', (doc / 1024).toFixed(0) + ' KB'); });
     }
+    // Con `file://` no hay forma de medirlo —ni `fetch` ni `cssRules`—, así que
+    // se usa el número ANOTADO en `data-peso` del propio elemento. No es una
+    // lista escrita a mano que se pudra en silencio: `prueba-peso.mjs` lo
+    // recalcula desde el disco y falla si se desfasó, igual que los sha256 del
+    // manifiesto. Servido por http gana siempre la medición real.
+  }
+
+  /* -----------------------------------------------------------------------
+     Los números del pie, contando
+     -----------------------------------------------------------------------
+     Cuentan desde cero hasta su valor cuando el pie entra en pantalla, una
+     sola vez. Sin librería: son treinta líneas y un `requestAnimationFrame`.
+
+     Tres detalles que hacen que no se vea barato:
+
+     · La cifra se reformatea en cada cuadro con `toLocaleString`, así que los
+       miles conservan su punto mientras sube en vez de aparecer al final.
+     · El sufijo —KB, ms— nunca se toca: se anima el número, no el texto.
+     · `.medicion` ya trae `font-variant-numeric: tabular-nums`, así que todas
+       las cifras ocupan lo mismo y la caja no tiembla al contar. Sin eso, el
+       ancho saltaría en cada cuadro y se notaría más la animación que el dato.
+
+     Y uno que es del contenido: DEPENDENCIAS vale cero, así que es el único
+     que no se mueve. Queda quieto mientras los otros tres corren. */
+
+  function contar() {
+    var celdas = [].slice.call(document.querySelectorAll('.medicion dd'));
+    var items = [];
+
+    celdas.forEach(function (dd) {
+      var txt = dd.textContent.trim();
+      var m = txt.match(/^([\d.,]+)(.*)$/);
+      if (!m) return;                                  // un guion: no hay qué contar
+      var destino = parseInt(m[1].replace(/\D/g, ''), 10);
+      if (!isFinite(destino)) return;
+      items.push({ el: dd, hasta: destino, sufijo: m[2] });
+    });
+    if (!items.length) return;
+
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;  // ya están puestos
+
+    var DURA = 900, t0 = null, enCola = false;
+
+    function poner(it, v) {
+      it.el.textContent = v.toLocaleString('es-AR') + it.sufijo;
+    }
+    items.forEach(function (it) { poner(it, 0); });
+
+    function cuadro(ahora) {
+      enCola = false;
+      if (t0 === null) t0 = ahora;
+      var f = Math.min(1, (ahora - t0) / DURA);
+      // Desaceleración: arranca rápido y frena, que es como se lee un contador.
+      var e = 1 - Math.pow(1 - f, 3);
+      items.forEach(function (it) { poner(it, Math.round(it.hasta * e)); });
+      if (f < 1) pedir(); else items.forEach(function (it) { poner(it, it.hasta); });
+    }
+    // Guarda de bucle único, la misma disciplina que el resto del sitio.
+    function pedir() {
+      if (enCola) return;
+      enCola = true;
+      requestAnimationFrame(cuadro);
+    }
+    pedir();
+  }
+
+  var medicion = document.querySelector('.medicion');
+  if (medicion && 'IntersectionObserver' in window) {
+    var vigiaMed = new IntersectionObserver(function (e) {
+      for (var i = 0; i < e.length; i++) {
+        if (!e[i].isIntersecting) continue;
+        vigiaMed.disconnect();      // una sola vez: si no, parpadea al subir y bajar
+        contar();
+      }
+    }, { threshold: 0.6 });
+    vigiaMed.observe(medicion);
   }
 
   if (document.readyState === 'complete') setTimeout(medir, 0);

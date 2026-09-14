@@ -15,7 +15,7 @@
    Sin librerías. Sin build. Abre con file://.
    ========================================================================== */
 
-/* Hanken Grotesk, servida desde `assets/fuentes/`. Era la última dependencia
+/* Hanken Grotesk, servida desde `assets/fonts/`. Era la última dependencia
    remota del sitio: con el `@import` de Google, abrir el archivo sin internet
    dejaba la tipografía en la del sistema. Comprobado que Chrome la carga bajo
    `file://` con ruta relativa, así que no hace falta incrustarla en base64.
@@ -29,7 +29,7 @@
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
-  src: url('assets/fuentes/hanken-grotesk-latin-ext.woff2') format('woff2');
+  src: url('../fonts/hanken-grotesk-latin-ext.woff2') format('woff2');
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
@@ -38,12 +38,12 @@
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
-  src: url('assets/fuentes/hanken-grotesk-latin.woff2') format('woff2');
+  src: url('../fonts/hanken-grotesk-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 /* JetBrains Mono, sólo para la terminal. OFL 1.1 — el texto en
-   `assets/fuentes/LICENCIA-jetbrains-mono.txt`.
+   `assets/licenses/jetbrains-mono.txt`.
 
    Subconjunto latino y SIN TABLAS DE SUSTITUCIÓN: 90 KB del original quedan en
    8,3. Las ligaduras se sacaron a propósito, no por peso — JetBrains Mono trae
@@ -54,7 +54,7 @@
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('assets/fuentes/jetbrains-mono-latin.woff2') format('woff2');
+  src: url('../fonts/jetbrains-mono-latin.woff2') format('woff2');
 }
 
 /* --------------------------------------------------------------------------
@@ -67,6 +67,12 @@
   --green:  #0D2B26;
   --navy:   #0F1F2E;
   --gold:   #C9A15B;
+  /* La monoespaciada de las dos terminales del sitio —la de Aplicaciones y la
+     volanta del hero—. La pila del sistema queda DETRÁS como reserva: sin una
+     familia elegida, cada visitante veía la suya (Px437 acá, Menlo en Mac,
+     Consolas en Windows: tres terminales distintas). */
+  --term-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo,
+               Consolas, 'Liberation Mono', monospace;
   --bone:   #F4F6F5;
 
   --void:     #040E0C;
@@ -130,16 +136,20 @@
 
   --step--2: 0.6875rem;
   --step--1: 0.8125rem;
-  --step-0:  1.0625rem;
+  --step-0:  1rem;
   --step-1:  1.1875rem;
   --step-2:  clamp(1.3rem, 1.15rem + 0.7vw, 1.6rem);
-  --step-3:  clamp(1.9rem, 1.45rem + 2.1vw, 3.1rem);
-  --step-4:  clamp(2.3rem, 1.5rem + 3.6vw, 4.6rem);
+  --step-3:  clamp(2.8rem, 1.9rem + 4.6vw, 5.6rem);
+  --step-4:  clamp(3.4rem, 2.2rem + 5.6vw, 7rem);
 
   --gutter:  clamp(1.25rem, 0.7rem + 2.4vw, 3.5rem);
 
   /* Alto de las dos piezas fijas. Las usa el hero para no quedar debajo. */
-  --alto-cabecera: 5rem;
+  /* 5.25rem y no 5: el encabezado mide 80,19 px —la marca son dos líneas— y
+     con 5rem la reserva quedaba 0,19 px CORTA. Con el degradado de antes ese
+     solape era invisible; con la barra opaca recorta el borde del contenido.
+     Sobran 3,8 px, que es holgura y no decoración. */
+  --alto-cabecera: 5.25rem;
   --alto-barra:    2.6rem;
   --shell:   80rem;
   --measure: 60ch;
@@ -189,17 +199,21 @@ body {
 
 img { max-width: 100%; height: auto; display: block; }
 
+/* Interlínea y espaciado van CON el tamaño, no aparte. Un titular de 90 px con
+   interlínea de párrafo se abre demasiado entre renglones, y cuanto más grande
+   es el tipo más suelto se ve: hay que cerrarlo. Por eso al subir la escala
+   bajan los dos —1.06 a 0.96, y -0.025 a -0.042em—. */
 h1, h2, h3, h4 {
   margin: 0;
   font-weight: 500;
-  line-height: 1.06;
-  letter-spacing: -0.025em;
+  line-height: 0.96;
+  letter-spacing: -0.042em;
   text-wrap: balance;
 }
 
-h1 { font-size: var(--step-4); font-weight: 400; letter-spacing: -0.035em; }
-h2 { font-size: var(--step-3); letter-spacing: -0.03em; }
-h3 { font-size: var(--step-1); font-weight: 600; line-height: 1.25; }
+h1 { font-size: var(--step-4); font-weight: 400; letter-spacing: -0.048em; }
+h2 { font-size: var(--step-3); }
+h3 { font-size: var(--step-1); font-weight: 600; line-height: 1.25; letter-spacing: -0.02em; }
 
 h1 em, h2 em, h3 em { font-style: normal; color: var(--acento); }
 
@@ -277,12 +291,21 @@ body > header {
   display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
   gap: 1rem var(--rhythm-s);
   padding: 1.1rem var(--gutter);
-  /* El degradado va como `background-image` y el sólido como `background-color`,
-     por separado: así el segundo puede transicionar cuando la página se
-     despega del tope. Un atajo `background` no dejaría animar solo el color. */
-  background-color: transparent;
-  background-image: linear-gradient(to bottom, color-mix(in srgb, var(--void) 94%, transparent), transparent);
+  /* SÓLIDO siempre, hero incluido. Adentro del hero tuvo un degradado que se
+     desvanecía hacia abajo y dejaba ver la escena 3D por detrás de la barra.
+     Se fue: la página no tiene más transparencias, y una sola regla —el mismo
+     color en todas las situaciones— es más fácil de sostener que un material
+     que cambia según dónde estés.
+
+     El precio, dicho: los primeros 80 px de la escena quedan tapados.
+
+     `background-color` y no el atajo `background`, para que el color pueda
+     transicionar cuando el tono cambia de claro a oscuro. */
+  background-color: var(--void);
+  background-image: none;
   transition: background-color 240ms var(--ease), border-color 240ms var(--ease);
+  /* La regla de abajo aparece al salir del hero: sigue marcando que la página
+     se despegó del tope, que ahora es lo único que lo señala. */
   border-bottom: 1px solid transparent;
 }
 
@@ -363,7 +386,17 @@ body > footer {
   display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--rhythm-s);
   font-size: var(--step--1); color: var(--ink-2);
 }
-body > footer p { flex: 1 1 16rem; }
+/* `flex: 1 1 16rem` vale para los <p> que son hijos DIRECTOS del pie, que es
+   una fila: ahí 16rem es un ancho. El de `.pie-marca` no: ese contenedor es una
+   COLUMNA, y el mismo flex-basis pasa a ser un ALTO — 256 px de caja para una
+   línea de 21. Eso era el hueco del pie.
+
+   Tercera vez que aparece este mismo mecanismo en el sitio: pasó con el núcleo
+   del mapa (`flex-basis: 100%` ganándole a `width`) y con `.cap-texto` en
+   Arquitectura. La regla: un `flex-basis` heredado por un contenedor de
+   dirección distinta cambia de eje y deja de significar lo que se escribió. */
+body > footer > p { flex: 1 1 16rem; }
+.pie-marca > p { flex: 0 0 auto; }
 body > footer a:not(.brand) { color: var(--ink-2); font-size: var(--step--1); }
 body > footer a:not(.brand):hover { color: var(--gold); }
 
@@ -466,21 +499,14 @@ body:not(.home) > main > section > ul { display: grid; gap: 0.5rem; }
   opacity: 0.88;
 }
 
-#hero::after {
-  content: "";
-  position: absolute;
-  inset: auto 0 0 0;
-  height: 52%;
-  /* 0, no -1: sin contexto de apilado propio en `#hero`, un -1 lo mandaría
-     detrás de la escena 3D y el degradado desaparecería. */
-  z-index: 0;
-  pointer-events: none;
-  background: linear-gradient(to top,
-    var(--void) 0%,
-    color-mix(in srgb, var(--void) 88%, transparent) 26%,
-    color-mix(in srgb, var(--void) 40%, transparent) 66%,
-    transparent 100%);
-}
+/* Acá vivía un segundo velo: un degradado al negro en el 52% inferior, encima
+   de la viñeta. Eran dos capas tapando lo mismo. Se sacó — queda sólo la
+   viñeta radial de `::before`.
+
+   Lo que hacía: apagar el pie del hero para que el titular y la tira de
+   capacidades se despegaran de la escena. Si con una sola capa el texto de
+   abajo cuesta leerse, el botón es la opacidad de la viñeta (0.88) o el
+   `text-shadow` que ya tiene `.hero-copy`, no volver a apilar. */
 
 #hero {
   /* SIN `z-index`, por lo mismo que `.cap`. */
@@ -510,6 +536,100 @@ body:not(.home) > main > section > ul { display: grid; gap: 0.5rem; }
 }
 
 .hero-copy h1 { max-width: 16ch; }
+
+/* La volanta: una línea de terminal que se escribe sola, arriba del titular.
+
+   Es EL MISMO OBJETO que la terminal de Aplicaciones, y eso es la decisión:
+   misma familia, mismo cuerpo, mismo signo `$`, misma geometría de cursor y el
+   mismo latido de 1,06 s —por eso reusa `term-late` y no define un keyframe
+   propio—. Dos terminales en un sitio tienen que ser la misma terminal.
+
+   Acá estuvieron antes un tablero de LEDs y un destello barriendo el texto.
+   El tablero era un objeto ajeno a la escena; el destello, invisible. Esto es
+   lo que el sitio ya sabía hacer, traído al hero.
+
+   VA A LA IZQUIERDA, sola. El resto del hero —titular, bajada, botones— sigue
+   centrado; la volanta arranca en la S de "Sistemas", apoyada en la misma
+   vertical que la primera línea del titular. Esa sangría NO está acá: la mide
+   `volanta.js`, porque el titular es texto centrado y su borde izquierdo
+   depende de la tipografía cargada y del ancho de la ventana.
+
+   La caja va a todo el ancho de la columna, que de paso resuelve el temblor:
+   si midiera el contenido, cada letra correría el centrado y se movería el
+   hero entero. */
+.volanta {
+  align-self: stretch;
+  /* Sin esto hereda `--measure` (60ch), que en monoespaciada da 522px y corta
+     la caja antes del borde de la columna. */
+  max-width: none;
+  font-family: var(--term-mono);
+  /* 14,5px, el mismo cuerpo que la terminal de 05. */
+  font-size: 0.90625rem;
+  line-height: 1.9;
+  /* Sin tracking: en una monoespaciada el `ch` tiene que valer exactamente lo
+     que avanza una letra, y `letter-spacing` no entra en la cuenta del `ch`.
+     Con tracking, el ancho reservado queda corto y la última letra se recorta. */
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: nowrap;
+  text-align: left;
+  color: #D7E4DF;
+}
+
+/* El prompt: `~ >`. El `~` apagado marca dónde estás; el `>` encendido te da
+   el turno. En la referencia el segundo signo era un `)`, que no es lo que usa
+   ninguna shell —el turno se pide con `>`, o con el `❯` de fish y Starship—.
+   Va el `>` de ASCII y no el `❯`: la punta fina depende de que la familia
+   tenga ese glifo, y si no lo tiene cae en otra fuente y rompe el paso de la
+   monoespaciada justo al lado de un texto que se mide en `ch`.
+
+   El cian es el único del sitio y por eso está medido: contra el verde
+   profundo del hero se lee como acento de terminal, no como un color nuevo
+   de la paleta.
+
+   El espacio entre los dos signos es un espacio de verdad, no un margen: en
+   una monoespaciada mide exactamente un carácter, que es lo que debe medir. */
+.volanta-signo { margin-right: 0.65rem; user-select: none; }
+.volanta-tilde { color: #6E8B84; }
+.volanta-punta { color: #4FC3AC; }
+
+/* Se revela animando el ANCHO en `ch`, no cortando la cadena: el texto está
+   entero en el DOM en todo momento. Es lo mismo que hace `.term-cmd`. */
+.volanta-txt {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  vertical-align: bottom;
+  width: 0;
+}
+
+/* El cursor va como hermano y no como `::after` del texto: el texto tiene
+   `overflow: hidden` y se lo comería mientras el ancho es cero.
+
+   Por defecto va FIJO. Late sólo en la pausa entre que terminó de escribirse
+   la palabra y que empieza a borrarse, y late DOS veces exactas: eso es el
+   `2` del final, que es lo que separa esto de la terminal de Aplicaciones
+   —allá el cursor no para nunca, como en el original de cult-ui—.
+
+   Contar parpadeos obliga a que no late siempre: con `infinite`, cuántos
+   entran en la pausa depende de en qué momento del ciclo terminó la palabra,
+   y serían dos o tres según la palabra. La clase la pone y la saca
+   `volanta.js`, que espera exactamente 2 × 1,06 s. */
+.volanta-cursor {
+  display: inline-block;
+  width: 0.55em; height: 1.05em;
+  vertical-align: -0.2em;
+  background: #EAF2EF;
+}
+.volanta.latiendo .volanta-cursor {
+  animation: term-late 1.06s steps(1, end) 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Queda la frase entera, quieta, y el cursor sin latir. */
+  .volanta.latiendo .volanta-cursor { animation: none; }
+}
+
 .hero-copy > p:last-of-type { color: var(--ink-2); max-width: 52ch; }
 
 .acciones { display: flex; flex-wrap: wrap; gap: 0.7rem; justify-content: center; margin-top: 0.5rem; }
@@ -642,17 +762,38 @@ body:not(.home) > main > section > ul { display: grid; gap: 0.5rem; }
 
 .cap + .cap { border-top: 1px solid var(--rule-2); }
 
+/* El epígrafe SIEMPRE arriba del titular, nunca al costado.
+
+   Esto era una grilla de dos columnas —epígrafe a la izquierda, titular a la
+   derecha, alineados por la base—, y las secciones que van adentro de
+   `.cap-cols` o de `.cap-lado` lo apilaban por su cuenta. Resultado: Enfoque y
+   Arquitectura lo mostraban arriba, y Productos, Método, Aplicaciones, Roadmap
+   y Conversemos al lado. Dos tratamientos para lo mismo en la misma página.
+
+   Apilado en todas. Las dos reglas de más abajo que lo apilaban quedan sin
+   trabajo, pero se dejan: son las que fijan el hueco de 0.9rem en esos dos
+   contextos.
+
+   El bloque se alinea a la izquierda. La excepción es el cierre, que va
+   centrado entero —epígrafe, titular, párrafo y botones— y tiene su regla más
+   abajo. */
 .cap-cabeza {
-  display: grid; grid-template-columns: minmax(0, 11rem) minmax(0, 1fr);
-  gap: 0.6rem var(--rhythm-s); align-items: baseline;
+  display: grid; grid-template-columns: minmax(0, 1fr);
+  gap: 0.6rem; align-items: start;
 }
 .cap-cabeza > p { max-width: none; color: var(--acento); }
+
+/* Aplicaciones: el TITULAR centrado, el epígrafe donde está. Se centra sólo el
+   texto del h2 —no el bloque— así que el `05 / APLICACIONES` sigue arrancando
+   en la misma x que el de las otras seis secciones. */
+#aplicaciones .cap-cabeza > h2 { text-align: center; }
 
 /* Base: dos columnas, título a la izquierda y párrafos a la derecha. Enfoque
    usa esta. NO va apilada: sin nada que ocupe la derecha —Arquitectura tiene el
    mapa, Enfoque no— la sección queda medio vacía. */
 .cap-cols { display: flex; flex-wrap: wrap; gap: var(--rhythm-s) var(--rhythm); align-items: flex-start; }
-.cap-cols > .cap-cabeza { flex: 1 1 19rem; display: flex; flex-direction: column; gap: 0.9rem; }
+.cap-cols > .cap-cabeza { flex: 1 1 19rem; display: flex; flex-direction: column; gap: 0.9rem;
+  align-items: flex-start; }
 .cap-cols > .cap-cabeza > p { align-self: flex-start; }
 
 .cap-texto { flex: 1 1 27rem; display: flex; flex-direction: column; gap: 1.1rem; }
@@ -684,18 +825,18 @@ body:not(.home) > main > section > ul { display: grid; gap: 0.5rem; }
   transition: box-shadow 220ms var(--ease), color 220ms var(--ease),
               transform 220ms var(--ease);
 }
-/* Al pasar el mouse sube un poco y la sombra se alarga; al apretar se hunde.
-   Es la misma luz, solo cambia la distancia. */
+/* Al pasar el mouse sube un poco y la sombra se alarga. Es la misma luz, sólo
+   cambia la distancia.
+
+   Y ahí termina. Tuvo un `:active` que lo hundía con sombras hacia adentro, y
+   eso contradecía lo que dice el comentario de arriba: un estado de apretado
+   promete que al soltar pasa algo, y no pasa nada. El chip reacciona a que
+   estás ahí, no invita a tocarlo. */
 .chip:hover {
   color: var(--acento);
   transform: translateY(-1px);
   box-shadow:  9px  9px 18px var(--relieve-sombra),
               -9px -9px 18px var(--relieve-luz);
-}
-.chip:active {
-  transform: none;
-  box-shadow: inset 4px 4px 9px var(--relieve-sombra),
-              inset -4px -4px 9px var(--relieve-luz);
 }
 
 .chip--oro { color: var(--acento); }
@@ -746,11 +887,36 @@ body:not(.home) > main > section > ul { display: grid; gap: 0.5rem; }
   display: inline-flex; align-items: flex-end;
 }
 .tarjeta > a:last-child:hover { color: var(--bone); }
-.tarjeta-media { display: block; order: -1; border: 1px solid var(--rule); background: var(--navy); }
 
-.pasos { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: 0 var(--rhythm-s); }
+/* CINCO O UNA. Cinco pasos es primo: cualquier otro reparto deja huérfanos
+   —3+2 a 1100 px, 2+2+1 a 700— y cada paso arrastra su regla, así que la
+   huérfana queda con una línea colgando sola. Por encima de 72rem entran las
+   cinco en fila (regla más abajo); por debajo, apiladas. Apiladas las barras
+   quedan una sobre otra, que también se lee como progresión. */
+.pasos { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0 var(--rhythm-s); }
 .paso { display: flex; flex-direction: column; gap: 0.55rem; padding: 1.6rem 0; border-top: 1px solid var(--rule); position: relative; }
-.paso::before { content: ""; position: absolute; top: -1px; left: 0; width: 2.5rem; height: 3px; background: var(--acento); }
+/* La marca dorada sobre la regla NO es un adorno: es dónde estás parado en el
+   proceso. Antes los cinco pasos repetían el mismo 2.5rem —una barra al 25%
+   dibujada cinco veces—, que es ruido. Ahora crece: 20, 40, 60, 80, 100.
+
+   Dice lo que la sección argumenta. El paso 05 es «integramos y desplegamos
+   sólo después de validar el flujo»: una barra que se llena es exactamente eso,
+   que nada avanza hasta que lo anterior está.
+
+   SIN animación, y a propósito. Roadmap ya tiene sus etapas apareciendo en
+   orden al entrar; si Método también se llenara, el gesto dejaría de ser un
+   momento y pasaría a ser un tic de la página. Que ésta se lea de un vistazo
+   es lo que hace que la otra se note. */
+.paso::before {
+  content: ""; position: absolute; top: -1px; left: 0;
+  width: var(--avance, 20%); height: 3px; background: var(--acento);
+  transition: width 220ms var(--ease);
+}
+.paso:nth-child(1) { --avance:  20%; }
+.paso:nth-child(2) { --avance:  40%; }
+.paso:nth-child(3) { --avance:  60%; }
+.paso:nth-child(4) { --avance:  80%; }
+.paso:nth-child(5) { --avance: 100%; }
 .paso .hud { color: var(--acento); }
 .paso p { color: var(--ink-2); font-size: 0.9375rem; }
 
@@ -809,6 +975,7 @@ body:not(.home) > main > section > ul { display: grid; gap: 0.5rem; }
 }
 .tablero canvas { display: block; }
 
+
 .arq-cadena { display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem 0.7rem; }
 .arq-cadena > span {
   font-size: var(--step--2); font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
@@ -839,11 +1006,18 @@ body:not(.home) > main > section > ul { display: grid; gap: 0.5rem; }
   flex: 1 1 100%;
   display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
   gap: 1px; background: var(--gris-linea); border: 1px solid var(--gris-linea);
-  margin-top: var(--rhythm-s); font-variant-numeric: tabular-nums;
+  /* Sin `margin-top`: el pie ya separa sus filas con `gap: var(--rhythm-s)`, y
+     el margen lo duplicaba — 96 px entre el copyright y la medición. */
+  font-variant-numeric: tabular-nums;
 }
-.medicion > div { background: var(--gris-hondo); padding: 0.95rem 1.1rem; display: flex; flex-direction: column; gap: 0.15rem; }
-.medicion dt { font-size: var(--step--2); color: var(--ink-3); letter-spacing: 0.1em; text-transform: uppercase; }
-.medicion dd { margin: 0; font-size: var(--step-1); font-weight: 600; color: var(--acento); }
+/* En UNA línea, etiqueta y número al lado, como la barra de estado. Apiladas
+   la fila medía 83 px; así queda en el mismo registro que el cromo fijo. */
+.medicion > div {
+  background: var(--gris-hondo); padding: 0.5rem 1rem;
+  display: flex; flex-direction: row; align-items: baseline; gap: 0.6rem;
+}
+.medicion dt { font-size: 0.625rem; color: var(--ink-3); letter-spacing: 0.1em; text-transform: uppercase; }
+.medicion dd { margin: 0; font-size: var(--step--1); font-weight: 600; color: var(--acento); }
 
 .pie-marca { display: flex; flex-direction: column; gap: 0.9rem; flex: 1 1 20rem; }
 .pie-links { display: flex; flex-wrap: wrap; gap: 0.6rem 1.4rem; flex: 1 1 18rem; }
@@ -938,6 +1112,10 @@ body > footer > .hud { flex: 1 1 100%; }
 
 /* El cierre: el degradado verde→azul del original. Va en `::before`, que es
    donde vive el relleno de la sección. */
+/* El cierre va centrado —titular, párrafo y botones— PERO el epígrafe no: ése
+   arranca a la izquierda, en la misma x que el de las otras seis secciones.
+   Así el `07 / CONVERSEMOS` sigue la serie de la página y lo que cambia de eje
+   es sólo el bloque que pide la acción. */
 .cap--cierre {
   --malla: transparent;
   --malla-halo: transparent;
@@ -946,6 +1124,8 @@ body > footer > .hud { flex: 1 1 100%; }
 .cap--cierre::before {
   background-image: linear-gradient(120deg, var(--green) 0%, var(--navy) 100%);
 }
+.cap--cierre .cap-cabeza { justify-items: center; }
+.cap--cierre .cap-cabeza > .hud { justify-self: start; text-align: start; }
 .cap--cierre .cap-cabeza,
 .cap--cierre > p { margin-inline: auto; }
 
@@ -960,10 +1140,10 @@ body > footer > .hud { flex: 1 1 100%; }
   grid-row: 3;
   position: relative; z-index: 2;
   width: 100%; max-width: var(--shell); margin-inline: auto;
-  /* Cinco exactas, no `auto-fit`: con `auto-fit` el navegador arma tantas
-     columnas como entren —ocho a 1440 px— y las cinco capacidades quedan
-     apretadas a la izquierda con tres huecos al costado. */
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  /* Cuatro exactas, no `auto-fit`: con `auto-fit` el navegador arma tantas
+     columnas como entren —ocho a 1440 px— y las capacidades quedan apretadas a
+     la izquierda con huecos al costado. Eran cinco hasta que salió Plataforma. */
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0;
   background: none;
   border: 0;
@@ -1003,8 +1183,8 @@ body > footer > .hud { flex: 1 1 100%; }
      Windows, Consolas. Tres visitantes, tres terminales.
 
      La pila queda DETRÁS como reserva, por si el archivo no carga. */
-  --term-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo,
-               Consolas, 'Liberation Mono', monospace;
+  /* La familia vive en `:root`: la usan la terminal de 05 y la volanta del
+     hero, y las dos tienen que ser la misma terminal. */
   margin-top: var(--rhythm-s);
   /* 43rem es el ancho del demo original (`max-w-[43rem]`), y no es arbitrario:
      una terminal se lee en columna angosta. A todo el ancho del capítulo, las
@@ -1202,6 +1382,93 @@ body > footer > .hud { flex: 1 1 100%; }
   color: var(--acento);
   overflow: visible;
 }
+/* Los de las tarjetas de productos: más grandes que los de la tira del hero,
+   porque ahí acompañan a un texto en la misma línea y acá encabezan la tarjeta
+   solos. Toman `--acento` de `.icono`, que en el capítulo azul es el oro —el
+   mismo del `01 · MVP FUNCIONAL` que va justo abajo—, así que el icono y su
+   epígrafe se leen como una sola cosa.
+
+   SIN animación propia. La tarjeta ya reacciona al mouse cambiando de fondo;
+   sumarle un movimiento al icono sería un segundo efecto para el mismo gesto.
+   Si alguna vez se anima, que sea una y que signifique algo. */
+.icono--prod {
+  width: 2rem; height: 2rem;
+  margin-bottom: 0.1rem;
+}
+
+/* --------------------------------------------------------------------------
+   Pantallas anchas y BAJAS
+   --------------------------------------------------------------------------
+   En un FHD de 1920x1080 el viewport útil son unos 937 px, y tres secciones no
+   entraban: productos por 76, arquitectura por 152, roadmap por 107.
+
+   El ritmo entre secciones está en `clamp(..., 10.5rem)`, o sea 168 px arriba
+   y 168 abajo: 336 px de aire, más de un tercio de la pantalla. Esa clamp
+   crece con el ANCHO, que es la medida equivocada acá — el problema no es que
+   la pantalla sea angosta, es que es baja.
+
+   Así que el corte mira el alto. En un monitor alto el ritmo queda como está.
+   -------------------------------------------------------------------------- */
+@media (min-width: 72rem) and (max-height: 62rem) {
+  :root {
+    --rhythm: 5.5rem;
+    /* El titular del hero también se acota. A 112 px envuelve a cuatro
+       renglones y el hero pasa de 813 a 883: la tira de capacidades se metía
+       35 px debajo de la barra de estado. Los titulares de sección no se
+       tocan — el hero es el único que compite con cromo fijo arriba y abajo. */
+    --step-4: clamp(3rem, 2rem + 4.4vw, 5.5rem);
+  }
+  /* El mapa se dimensiona por `aspect-ratio`, así que en pantalla ancha crece
+     a lo alto sin que nada lo frene: 525 px a 1920.
+
+     Se acota el ANCHO y no el alto. Con `max-height` la caja deja de ser 5:4
+     —quedaba 699x384— y las dos órbitas, que son `border-radius: 50%`, se
+     vuelven elipses. Acotando el ancho el mapa se achica entero.
+
+     Y el techo va en `.arq`, no en `.mapa`: el tablero de LEDs es su hermano y
+     tiene que seguir midiendo lo mismo. Acotando sólo el mapa quedaban 400
+     contra 699 y dejaban de leerse como una sola caja. */
+  .cap-cols--par > .arq { max-width: 30rem; margin-inline: auto; }
+}
+
+/* --------------------------------------------------------------------------
+   Las etapas de Roadmap
+   --------------------------------------------------------------------------
+   Cuatro estados del MISMO módulo cuadrado del isotipo: 1 · 2 · 4 · 9. Lo que
+   cambia entre tarjeta y tarjeta es cuántos hay y qué tan alineados están, no
+   qué tan intrincados son — el módulo mide siempre 6 y nunca se deforma.
+
+   La primera etapa va girada siete grados: el prototipo funciona pero está
+   torcido. De ahí en adelante, todo a escuadra.
+
+   Es a propósito lo contrario de «va volviéndose más complejo». La página
+   argumenta que no se suma complejidad porque sí, y la progresión real de
+   Roadmap no es de simple a intrincado: es de uno suelto a muchos iguales.
+   Eso es lo que dicen «producto replicable» y «escala multi-cliente».
+   -------------------------------------------------------------------------- */
+.modulos {
+  width: 2rem; height: 2rem;
+  fill: var(--acento);
+  flex: 0 0 auto;
+  margin-bottom: 0.1rem;
+}
+
+/* La entrada: las cuatro etapas aparecen EN ORDEN cuando la sección entra en
+   pantalla, y una sola vez. Es un gesto orquestado —la progresión ocurriendo—
+   y no cuatro efectos sueltos reaccionando cada uno por su lado.
+
+   Sin JavaScript se ven igual: el estado por defecto es visible y la animación
+   sólo corre cuando `app.js` marca la sección. Y con movimiento reducido, la
+   regla global deja la duración en nada, así que aparecen y listo. */
+#roadmap.en-vista .modulos {
+  animation: etapa-entra 420ms var(--ease) backwards;
+  animation-delay: calc(var(--paso) * 130ms);
+}
+@keyframes etapa-entra {
+  from { opacity: 0; transform: translateY(6px) scale(0.92); }
+  to   { opacity: 1; transform: none; }
+}
+
 /* El módulo activado del isotipo: una de las cuatro celdas, llena. */
 .icono--grilla rect:nth-of-type(2) { fill: currentColor; }
 
@@ -1241,44 +1508,54 @@ body[data-tono-barra="claro"] #estado {
    15. Disposición de las tarjetas
    -------------------------------------------------------------------------- */
 
-/* Una sola fila, siempre, y si no entra se corre en horizontal.
+/* Las tarjetas de productos ENVUELVEN.
 
-   El scroll lo hace el ENVOLTORIO y no la grilla. Si lo hiciera la grilla, el
-   lienzo de los haces —que va posicionado adentro— quedaría del ancho visible
-   y no del ancho real: al correr las tarjetas, los haces se quedarían atrás y
-   caerían fuera de las juntas. Con el riel afuera, la grilla es tan ancha como
-   su contenido, el lienzo la cubre entera y todo se desplaza junto.
+   Acá vivió un riel: una sola fila que se corría en horizontal cuando no
+   entraba, con `container-type: inline-size` y `grid-auto-flow: column`. El
+   scroll lo hacía el envoltorio y no la grilla, porque el lienzo de los haces
+   va posicionado adentro y si la grilla se desplazaba, los haces se quedaban
+   atrás y caían fuera de las juntas.
 
-   Efecto lateral bienvenido: en una sola fila no hay celdas vacías, así que
-   el recorte de `haz.js` no tiene nada que excluir. */
-.riel {
-  /* Consulta de contenedor: las columnas se calculan contra el ancho del riel.
-     Sin esto, `1fr` bajo `width: max-content` no tiene tope —cada tarjeta se
-     estira a lo que pida su texto— y la fila medía 2842 px aunque sobrara
-     lugar. */
-  container-type: inline-size;
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-  scrollbar-width: thin;
-  scrollbar-color: var(--gris-linea) transparent;
+   Se fue: envolviendo, las tarjetas entran en el ancho de la página y nadie
+   tiene que descubrir que hay contenido corrido al costado. `.tarjetas` ya
+   envuelve sola —`auto-fit` con mínimo de 17rem—, así que `.tarjetas--fila`
+   se queda sin overrides y el riel sin trabajo.
+
+   Vuelve a haber celdas vacías cuando la última fila no se completa, que es
+   justo lo que el recorte de `haz.js` sabe manejar: recorta a la caja de cada
+   tarjeta, así que un hueco no deja pasar el haz. */
+.riel { min-width: 0; }
+
+/* CUATRO, DOS O UNA. Nunca tres.
+
+   `auto-fit` arma todas las columnas que entren, y con cuatro tarjetas eso
+   incluye el 3 — que deja una huérfana sola al lado de una celda vacía del
+   tamaño de dos tarjetas. Es el único reparto de los cuatro posibles que se ve
+   roto, y el navegador no tiene forma de saberlo.
+
+   Así que las columnas no se negocian: se declaran por tramo, y el 3 no está
+   en la lista. Vale para las dos grillas de cuatro tarjetas que tiene el
+   sitio, productos y roadmap.
+
+   Los cortes salen de la medida, no del gusto: una tarjeta deja de leerse por
+   debajo de unas 17rem. A 73rem de viewport la grilla mide ~1090 px, que es lo
+   que necesitan cuatro; a 40rem mide ~580, que alcanza para dos. */
+#productos .tarjetas,
+#roadmap .tarjetas {
+  grid-template-columns: minmax(0, 1fr);
 }
-.riel > .tarjetas--fila {
-  max-width: none;
-  width: max-content;
-  min-width: 100%;
-  grid-template-columns: none;
-  grid-auto-flow: column;
-  /* Entran las cuatro justas cuando hay lugar; si no, no bajan de 17rem y la
-     fila se corre. Se descuentan las juntas de 1px entre tarjetas y los 2px
-     del marco de la grilla: sin esos dos, la fila daba 1282 contra un riel de
-     1280 y se corría dos píxeles para siempre. */
-  --cuantas: 4;
-  grid-auto-columns:
-    max(17rem, calc((100cqw - 2px - (var(--cuantas) - 1) * 1px) / var(--cuantas)));
+@media (min-width: 40rem) {
+  #productos .tarjetas,
+  #roadmap .tarjetas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 73rem) {
+  #productos .tarjetas,
+  #roadmap .tarjetas { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 
-@media (max-width: 64rem) { #hero > .tira { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-@media (max-width: 40rem) { #hero > .tira { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+/* Dos y no tres: con cuatro capacidades, tres columnas dejan una huérfana sola
+   en la segunda fila. Dos dan un 2x2 parejo. */
+@media (max-width: 64rem) { #hero > .tira { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
 /* Ventanas bajas: a 633 px de alto el hero desbordaba 141 px y la tira se iba
    abajo del pliegue. El que ocupa es el h1 a tres líneas, así que acá se achica
@@ -1295,10 +1572,89 @@ body[data-tono-barra="claro"] #estado {
   #hero > .tira > .capacidad { padding-block: 0.7rem; }
 }
 
-/* Cuando el menú envuelve, el encabezado pasa de 79 a 122 px y el hero le
-   quedaba debajo. Medido, no estimado. */
+/* --------------------------------------------------------------------------
+   El menú de hamburguesa
+   --------------------------------------------------------------------------
+   Por debajo de 48rem el menú envolvía debajo de la marca y el encabezado
+   pasaba de 80 a 123 px —medido—. Como el encabezado es `fixed`, esos 43 px de
+   más se los come el contenido en todas las pantallas chicas.
+
+   El botón sólo existe ahí abajo. Arriba, el menú es el de siempre.
+
+   El panel toma `var(--void)` OPACO y no el degradado del encabezado: abierto
+   sobre la escena 3D del hero, cualquier transparencia deja el texto ilegible.
+   Y como el tono del encabezado intercambia `--void` con `--bone`, el mismo
+   token da el fondo correcto sobre el hero oscuro y sobre un capítulo claro,
+   sin una regla más.
+   -------------------------------------------------------------------------- */
+
+.hamburguesa {
+  display: none;
+  appearance: none; background: none; border: 0; padding: 0;
+  /* 44 px: el objetivo táctil mínimo. El dibujo son 22 px, el resto es zona
+     de toque — no se ve, pero se agradece con el pulgar. */
+  width: 44px; height: 44px;
+  place-items: center;
+  color: var(--bone);
+  cursor: pointer;
+}
+.hamburguesa:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+.hamburguesa-lineas { position: relative; display: block; }
+.hamburguesa-lineas,
+.hamburguesa-lineas::before,
+.hamburguesa-lineas::after {
+  width: 22px; height: 1.5px;
+  background: currentColor;
+  transition: transform 240ms var(--ease), background-color 140ms var(--ease);
+}
+.hamburguesa-lineas::before,
+.hamburguesa-lineas::after { content: ""; position: absolute; left: 0; }
+.hamburguesa-lineas::before { top: -7px; }
+.hamburguesa-lineas::after  { top:  7px; }
+
+/* Abierto, las tres líneas se vuelven una cruz: la del medio se apaga y las
+   otras dos se juntan y giran. */
+body > header.abierto .hamburguesa-lineas { background: transparent; }
+body > header.abierto .hamburguesa-lineas::before { transform: translateY(7px) rotate(45deg); }
+body > header.abierto .hamburguesa-lineas::after  { transform: translateY(-7px) rotate(-45deg); }
+
+@media (max-width: 48rem) {
+  .hamburguesa { display: grid; }
+
+  /* `nowrap`: la marca y el botón se quedan en una línea pase lo que pase. */
+  body > header { flex-wrap: nowrap; }
+
+  body > header nav {
+    position: absolute; inset: 100% 0 auto 0;
+    display: none;
+    flex-direction: column; align-items: stretch;
+    gap: 0;
+    padding: 0.25rem var(--gutter) 1.25rem;
+    background: var(--void);
+    border-bottom: 1px solid var(--rule);
+  }
+  body > header.abierto nav { display: flex; }
+
+  #nav-links { flex-direction: column; align-items: stretch; gap: 0; }
+
+  body > header nav a {
+    display: flex; align-items: center;
+    min-height: 48px; padding-block: 0.5rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  body > header nav > a:last-child {
+    justify-content: center;
+    margin-top: 1rem; border-bottom: 0;
+  }
+}
+
+/* Antes el menú envolvía acá y el encabezado pasaba de 79 a 122 px, así que la
+   reserva subía a 8rem. Con la hamburguesa vuelve a una sola línea y la reserva
+   baja: eran 43 px de cromo fijo que el contenido recuperaba en todas las
+   pantallas chicas. */
 @media (max-width: 56rem) {
-  :root { --alto-cabecera: 8rem; }
+  :root { --alto-cabecera: 5.5rem; }
   #hero > .tira > .capacidad { padding-inline: 0.75rem; }
 }
 
@@ -1326,16 +1682,21 @@ body[data-tono-barra="claro"] #estado {
    usa `100vw` porque incluye la barra de scroll y agrega desplazamiento
    horizontal. Hay que declarar las tres —`max-width`, `width`, `margin-inline`—
    porque `.cap > *` las fija a la caja central y hay que soltarlas. */
+/* SEIS columnas y no cinco. Con cinco, los dos tramos donde la barra envuelve
+   dejaban una huérfana: 3 columnas daban 3+2 y 2 columnas daban 2+2+1. Seis es
+   divisible por los tres repartos —6, 3 y 2— así que ninguno deja sobrante. */
 .marcas {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   align-items: center;
   justify-items: center;
   gap: 0;
   max-width: none;
   width: auto;
   margin-inline: calc(var(--gutter) * -1);
-  margin-top: var(--rhythm-s);
+  /* Sin `margin-top`: `.cap` ya separa a sus hijos con `gap: var(--rhythm-s)`,
+     y el margen lo duplicaba —96 px desde el fondo de la columna más alta—.
+     Mismo caso que la medición en el pie. */
 }
 
 .marca-col {
@@ -1457,23 +1818,17 @@ body[data-tono-barra="claro"] #estado {
 .partner--gcp { --alto-logo: clamp(1.42rem, 1.16rem + 0.88vw, 1.96rem); }
 
 
-/* Vidrio: translúcido con desenfoque detrás, en el encabezado y en el rail.
+/* Al salir del hero ya sólo aparece la regla de abajo: el color sólido lo pone
+   la regla base, hero incluido.
 
-   Solo FUERA DEL HERO, y no es solo estética: `backdrop-filter` reprocesa lo
-   que tiene atrás, y atrás del encabezado en el hero está la escena 3D
-   dibujándose a 60 cuadros por segundo. Sería desenfocar un canvas vivo en cada
-   cuadro. Sobre los capítulos, que son estáticos, no cuesta nada.
+   Acá hubo vidrio —`backdrop-filter: blur(16px) saturate(125%)` sobre un 62%
+   de `--void`—. Se sacó junto con el degradado del hero: un panel de menú
+   abierto sobre una escena en movimiento necesita tapar, y desenfocar media
+   pantalla detrás de una barra fija se paga en cada cuadro.
 
-   Dentro del hero las dos piezas quedan como estaban: el encabezado con su
-   degradado y el rail sin caja, para no taparle la escena.
-
-   `--void` y `--rule` los intercambia el tono de cada pieza, así que el vidrio
-   se adapta al capítulo claro u oscuro sin una regla más. */
+   `--rule` lo intercambia el tono de cada pieza, así que la regla se adapta al
+   capítulo claro u oscuro sin una regla más. */
 body.fuera-hero > header {
-  background-color: color-mix(in srgb, var(--void) 62%, transparent);
-  background-image: none;
-  -webkit-backdrop-filter: blur(16px) saturate(125%);
-  backdrop-filter: blur(16px) saturate(125%);
   border-bottom-color: var(--rule);
 }
 
@@ -1500,6 +1855,10 @@ body.fuera-hero > header {
    Las piezas van en porcentajes, no en píxeles: la caja cambia de tamaño con el
    ancho y las posiciones tienen que seguirla. */
 .mapa {
+  /* El diámetro del núcleo, acá y no en `.mapa-nucleo`, porque ahora lo usan
+     dos elementos: el núcleo de vidrio y el aro que lo rodea. Escrito dos
+     veces, el día que cambie uno el aro queda descentrado de tamaño. */
+  --nucleo: clamp(4.5rem, 3.5rem + 4vw, 6.5rem);
   position: relative;
   margin-top: var(--rhythm-s);
   aspect-ratio: 5 / 4;
@@ -1540,108 +1899,79 @@ body.fuera-hero > header {
 
    `brightness` por debajo de 1 porque el fondo de la sección es claro: sobre
    fondo claro el vidrio tiene que hundirse, no encenderse. */
-.mapa-nucleo {
+/* ---------------------------------------------------------------------------
+   EL NÚCLEO — `lucky-falcon-75` de xXJollyHAKERXx (uiverse.io, MIT)
+
+   COPIA LITERAL. Las tres reglas de abajo están tal como se publican: los
+   mismos nombres de clase, los mismos colores, el mismo `spinning82341`. No se
+   tocó un valor. Si algo hay que ajustar, se ajusta ACÁ ABAJO, en el bloque de
+   colocación, para que esto siga siendo comparable con el original.
+
+   Acá vivía una esfera de vidrio con NQ / CORE adentro. Está guardada entera
+   en `../nortiqa-taller/nucleo-vidrio.css`, con su marcado. -------------- */
+
+.spinner {
+  background-image: linear-gradient(rgb(186, 66, 255) 35%,rgb(0, 225, 255));
+  width: 100px;
+  height: 100px;
+  animation: spinning82341 1.7s linear infinite;
+  text-align: center;
+  border-radius: 50px;
+  filter: blur(1px);
+  box-shadow: 0px -5px 20px 0px rgb(186, 66, 255), 0px 5px 20px 0px rgb(0, 225, 255);
+}
+
+.spinner1 {
+  /* Lo ÚNICO que cambia del original. Era `rgb(36, 36, 36)`, que no es un color
+     elegido: es el fondo de la página de uiverse, y ahí este disco desaparece.
+     Su trabajo es ser invisible contra lo que tiene atrás. Va el fondo del
+     capítulo —hoy #E9EEEB— y como variable, para que siga al capítulo si
+     alguna vez cambia de paleta. */
+  background-color: var(--cap-fondo);
+  width: 100px;
+  height: 100px;
+  border-radius: 50px;
+  filter: blur(10px);
+}
+
+@keyframes spinning82341 {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* COLOCACIÓN — lo único que se agrega, y va aparte para no ensuciar la copia.
+   El centrado NO puede ir en `transform`: el keyframe escribe ahí y se llevaría
+   puesto el `translate`. Va en `left`/`top` con el radio restado. */
+.spinner {
+  position: absolute;
+  left: calc(50% - 50px);
+  top:  calc(50% - 50px);
+  pointer-events: none;
+  /* 5,1 s en vez de 1,7: el triple de lento. El original es un LOADER y tiene
+     que verse ocupado; acá es el latido de un núcleo en un diagrama que se mira
+     mientras se lee al lado. La regla de arriba conserva el valor publicado. */
+  animation-duration: 5.1s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner { animation: none; }
+}
+
+/* El rótulo del núcleo, en el hueco del aro. Los tamaños y el interletrado son
+   los que tenía adentro de la esfera de vidrio: lo que se fue es el vidrio, no
+   el rótulo. Va DESPUÉS del `.spinner` en el marcado, así queda encima sin
+   necesidad de `z-index`. */
+.nucleo-texto {
   position: absolute; left: 50%; top: 50%;
   transform: translate(-50%, -50%);
-  width: clamp(4.5rem, 3.5rem + 4vw, 6.5rem);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  display: grid; align-content: center; justify-items: center; gap: 0.15rem;
-  isolation: isolate;
-  /* Letra OSCURA sobre vidrio claro.
-
-     ⚠️ `--tinta` y NO `--gris`: dentro de un capítulo claro `--gris` está
-     redefinido como la SUPERFICIE de los cuadros, que ahí es casi blanca. El
-     token se llama como un color pero significa un rol, y usarlo por el nombre
-     dejó la letra blanca sobre vidrio blanco. `--tinta` es el literal del
-     manual y no lo redefine nadie. */
+  display: grid; justify-items: center; gap: 0.15rem;
+  text-align: center;
   color: var(--tinta);
-
-  /* Cristalino: poco tinte y poco desenfoque. El desenfoque grande promedia el
-     fondo y lo deja lechoso; 8 px separa el vidrio del fondo pero deja ver la
-     grilla de atrás casi nítida. */
-  background:
-    /* Brillo especular arriba a la izquierda: es lo que hace que el ojo lo lea
-       como esfera y no como disco. Acotado y lejos del texto. */
-    radial-gradient(40% 32% at 30% 18%, rgba(255, 255, 255, 0.75), transparent 70%),
-    rgba(244, 246, 245, 0.48);
-  -webkit-backdrop-filter: blur(8px) saturate(180%) brightness(1.04);
-  backdrop-filter: blur(8px) saturate(180%) brightness(1.04);
-  border: 1px solid rgba(255, 255, 255, 0.55);
-  box-shadow:
-    0 1px 2px rgba(26, 31, 35, 0.14),                   /* contacto */
-    0 18px 40px -12px rgba(26, 31, 35, 0.26),           /* ambiente */
-    inset 0  1px 0 rgba(255, 255, 255, 0.85),           /* luz de arriba */
-    inset 0 -1px 0 rgba(26, 31, 35, 0.10),
-    inset  1px 0 0 rgba(255, 255, 255, 0.35),
-    inset -1px 0 0 rgba(255, 255, 255, 0.35);
+  pointer-events: none;
 }
-
-/* SCRIM LOCAL, debajo del texto y nada más. Es la salida que da el material
-   cuando el piso de contraste cuesta demasiada transparencia: en vez de
-   espesar el panel entero, se oscurece solo el disco donde vive el texto y se
-   desvanece antes del borde. El panel queda transparente de verdad —tinte
-   0,26— y el texto compuesto llega a 5,86:1. */
-.mapa-nucleo::before {
-  content: "";
-  position: absolute; inset: 0; z-index: -1;
-  border-radius: inherit;
-  /* Ceñido al texto y nada más: antes cubría medio disco y esa masa gris era
-     lo que lo enturbiaba. Compuesto con el tinte da ~0,66 → 5,54:1. */
-  /* El scrim ahora ACLARA en vez de oscurecer, porque el texto es oscuro.
-     Compuesto con el tinte queda en ~0,72 de blanco: 7,3:1 contra #1A1F23,
-     y el piso para ese texto es 0,55. */
-  background: radial-gradient(closest-side,
-    rgba(255, 255, 255, 0.52) 0%, rgba(255, 255, 255, 0.46) 32%, transparent 58%);
-}
-
-/* IRIDISCENCIA: el acento de color. Va en `screen`, o sea que SUMA luz en vez
-   de pintar encima, y por eso no toca el contraste del texto. El oro y el verde
-   agua son de la marca; el cian es la franja fría que hace que se lea como
-   prisma y no como un degradado. */
-.mapa-nucleo::after {
-  content: "";
-  position: absolute; inset: 0; z-index: -1;
-  border-radius: inherit;
-  /* ⚠️ Sobre vidrio CLARO el `screen` no sirve: lleva todo hacia el blanco y el
-     color desaparece. Se mezcla normal, con alfas medias, y queda pastel — que
-     es como se ve la iridiscencia real sobre una superficie clara. */
-  background:
-    conic-gradient(from 205deg at 50% 50%,
-      rgba(224, 176, 96, 0.78) 0deg,
-      rgba(120, 205, 170, 0.68) 80deg,
-      rgba(120, 186, 255, 0.66) 160deg,
-      rgba(206, 150, 220, 0.58) 240deg,
-      rgba(224, 176, 96, 0.78) 360deg);
-  /* ⚠️ Acá está la diferencia entre vidrio y pantalla sucia: el color vive SOLO
-     en el bisel, no en todo el disco. El centro queda ópticamente plano —se ve
-     la grilla de atrás sin teñir— y el prisma aparece en el anillo, que es
-     donde un bisel real dobla la luz. Antes el cónico cubría todo y por eso se
-     veía lechoso. */
-  -webkit-mask-image: radial-gradient(closest-side, transparent 60%, #000 88%);
-  mask-image: radial-gradient(closest-side, transparent 60%, #000 88%);
-}
-
-.mapa-nucleo strong { font-size: var(--step-2); font-weight: 600; letter-spacing: 0.06em; line-height: 1; }
-.mapa-nucleo small  { color: var(--tinta); opacity: 0.68; font-size: 0.5rem; }
-
-/* El material se apaga solo cuando el sistema lo pide, que es la regla: nunca
-   se quita el vidrio dejando el hueco — se reemplaza por el sólido. */
-@media (prefers-reduced-transparency: reduce) {
-  .mapa-nucleo {
-    background: var(--claro);
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
-  }
-  .mapa-nucleo::after { display: none; }
-}
-@media (prefers-contrast: more) {
-  .mapa-nucleo {
-    background: rgba(255, 255, 255, 0.92);
-    border-width: 2px;
-    border-color: rgba(26, 31, 35, 0.35);
-  }
-}
+.nucleo-texto > strong { font-size: var(--step-2); font-weight: 600; letter-spacing: 0.06em; line-height: 1; }
+.nucleo-texto > small  { color: var(--tinta); opacity: 0.68; font-size: 0.5rem; }
 
 .mapa-item { position: absolute; }
 .m1 { left:  9%; top: 18%; }
@@ -1704,7 +2034,15 @@ body.fuera-hero > header {
 }
 .cap-cols--par .mapa { margin-top: 0; }
 .cap-lado { display: flex; flex-direction: column; gap: var(--rhythm-s); }
-.cap-lado > .cap-cabeza { display: flex; flex-direction: column; gap: 0.9rem; }
+/* `.cap-texto` trae `flex: 1 1 27rem`, escrito para `.cap-cols`, que es una
+   FILA: ahí 27rem es un ancho. Acá adentro el contenedor es una COLUMNA y el
+   mismo `flex-basis` pasa a ser un ALTO — 432 px de caja para un texto que
+   ocupa 170. Eso era el hueco entre el texto y el mapa.
+
+   `auto`: que mida lo que mide su contenido. */
+.cap-lado > .cap-texto { flex: 0 0 auto; }
+.cap-lado > .cap-cabeza { display: flex; flex-direction: column; gap: 0.9rem;
+  align-items: flex-start; }
 .cap-lado > .cap-cabeza > p { align-self: flex-start; }
 /* La medida la llevan los párrafos, no el contenedor. */
 .cap-lado .cap-texto > p { max-width: 46ch; }
@@ -1713,4 +2051,7 @@ body.fuera-hero > header {
 /* Angosto: el diagrama debajo del texto. */
 @media (max-width: 64rem) {
   .cap-cols--par { grid-template-columns: 1fr; align-items: start; }
+  /* Apilado no hay nada a la izquierda con qué alinearse: el desplazamiento
+     que baja el mapa hasta el titular sólo tiene sentido en dos columnas. */
+  .cap-cols--par > .arq { margin-top: 0; }
 }

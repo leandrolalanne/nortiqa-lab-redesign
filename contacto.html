@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex, nofollow">
     <title>Contacto – Nortiqa Lab</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <script src="assets/js/app.js" defer></script>
   </head>
   <body>
     <a href="#contenido">Saltar al contenido</a>
@@ -13,7 +14,11 @@
       <a href="index.html" aria-label="Nortiqa, inicio">
               NORTIQA<small> Sistemas de Inteligencia Organizacional</small>
       </a>
-      <nav aria-label="Principal">
+      <button type="button" class="hamburguesa" aria-expanded="false" aria-controls="nav-principal">
+        <span class="hamburguesa-lineas" aria-hidden="true"></span>
+        <span class="solo-lectores">Menú</span>
+      </button>
+      <nav aria-label="Principal" id="nav-principal">
         <div id="nav-links">
           <a href="productos-ia.html">Productos</a>
           <a href="index.html#metodo">Método</a>
