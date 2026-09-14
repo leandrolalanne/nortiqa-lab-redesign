@@ -187,15 +187,16 @@
         "autor": "xXJollyHAKERXx",
         "origen": "https://uiverse.io/xXJollyHAKERXx/lucky-falcon-75",
         "licencia": "MIT",
-        "donde": "assets/css/styles.css — el aro del nucleo NQ en #arquitectura",
-        "nota": "Se porto el MECANISMO, no la paleta: un disco con degradado que gira y otro encima que le tapa el centro; el aro es lo que sobra de tapar un disco con otro. El violeta y el cian del original se reemplazaron por el oro y el verde agua del bisel del propio nucleo. El disco de adentro pasa de rgb(36,36,36) a var(--cap-fondo) porque ese gris no era color sino el fondo de la pagina de uiverse."
+        "donde": "assets/css/styles.css — el nucleo NQ de #arquitectura",
+        "nota": "Copia LITERAL de las tres reglas publicadas. Tres cosas se le agregan aparte, sin tocar la copia: la colocacion, la velocidad -5,1 s, el triple de lento que el original, que es un loader y tiene que verse ocupado- y un solo valor cambiado: el disco que tapa pasa de rgb(36,36,36) a var(--cap-fondo), porque ese gris no era un color elegido sino el fondo de la pagina de uiverse, donde el disco desaparece y solo queda el aro."
       },
       "onda": {
         "nombre": "fondo de onda",
         "origen": "https://codepen.io/yukiloz7/pen/yLgYpWM",
         "licencia": "MIT (CodePen, por defecto)",
-        "donde": "FUERA DEL SITIO — ../nortiqa-taller/onda.js",
-        "nota": "Se implemento a mano y se saco del roadmap. Se conserva en el taller."
+        "donde": "assets/js/onda.js — fondo de #metodo (seccion 03)",
+        "nota": "Un solo fragment shader, portado a mano y sin dependencias. Los colores y las constantes son las del pen. Dos cambios, los dos porque la seccion es CLARA: el lienzo va transparente y la intensidad sale por ALFA -el pen SUMA luz sobre negro-, y el techo es bajo -0,16- porque es un detalle de fondo, no un grafico. Se ajusta con --onda-techo desde el CSS. La onda se muda de capitulo moviendo el <canvas>: la regla cuelga del #onda, no de la seccion.",
+        "aprendido": "El `distortion` del pen es 0.050. Con un valor grande las tres muestras de color caen en fases distintas y salen ondas SEPARADAS en vez de aberracion cromatica."
       }
     }
   }

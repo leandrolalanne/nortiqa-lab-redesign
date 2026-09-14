@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="assets/css/styles.css">
     <script src="assets/js/scene.js" defer></script>
     <script src="assets/js/haz.js" defer></script>
+    <script src="assets/js/onda.js" defer></script>
     <script src="assets/js/marcas.js" defer></script>
     <script src="assets/js/terminal.js" defer></script>
     <script src="assets/js/tablero.js" defer></script>
@@ -172,6 +173,10 @@
       </section>
 
       <section id="metodo" class="cap cap--claro" aria-labelledby="metodo-titulo">
+        <!-- La onda de fondo. Port a mano del pen de yukiloz7 -un solo
+             fragment shader, `onda.js`-. Es un ADORNO: no dice nada, y por eso
+             va `aria-hidden` y fuera del alcance del puntero. -->
+        <canvas id="onda" aria-hidden="true"></canvas>
         <header class="cap-cabeza">
           <p class="hud">03 / Método</p>
           <h2 id="metodo-titulo">Primero el proceso. Después la IA.</h2>
@@ -446,7 +451,7 @@
       <!-- Una empresa que vende observabilidad muestra la suya. -->
       <dl class="medicion">
         <div><dt>Dependencias</dt><dd id="m-deps">0</dd></div>
-        <div><dt>Peso propio</dt><dd id="m-peso" data-peso="360">360 KB</dd></div>
+        <div><dt>Peso propio</dt><dd id="m-peso" data-peso="371">371 KB</dd></div>
         <div><dt>Listo en</dt><dd id="m-carga">—</dd></div>
         <div><dt>Nodos DOM</dt><dd id="m-nodos">—</dd></div>
       </dl>

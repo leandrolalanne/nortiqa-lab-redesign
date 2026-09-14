@@ -760,6 +760,24 @@ body:not(.home) > main > section > ul { display: grid; gap: 0.5rem; }
    borde de la sección parecía un espejo. Igual no hace falta: el velo del
    hero ya termina en --void, así que la transición es continua sin él. */
 
+/* LA ONDA DE ENFOQUE. Va entre el relleno del capítulo (0) y el texto (2), en
+   la capa 1: por eso pisa el `z-index: 2` que `.cap > *` le pone a todo hijo
+   directo. Un `#id` gana sin trucos de orden.
+
+   El tamaño va EXPLÍCITO, como en `.haz`: un `<canvas>` es un elemento
+   reemplazado y con `inset` solo no se estira — se queda con sus 300×150 px
+   intrínsecos y se planta arriba a la izquierda.
+
+   `--onda-techo` es la intensidad y la lee `onda.js` de acá, no la trae
+   escrita. Es el único botón: 0 la apaga, 1 es la del pen a plena luz. */
+#onda {
+  position: absolute; inset: 0; z-index: 1;
+  width: 100%; height: 100%;
+  max-width: none; margin: 0;
+  display: block; pointer-events: none;
+  --onda-techo: 0.16;
+}
+
 .cap + .cap { border-top: 1px solid var(--rule-2); }
 
 /* El epígrafe SIEMPRE arriba del titular, nunca al costado.
@@ -1448,9 +1466,99 @@ body > footer > .hud { flex: 1 1 100%; }
    -------------------------------------------------------------------------- */
 .modulos {
   width: 2rem; height: 2rem;
-  fill: var(--acento);
+  /* Los módulos van OSCUROS, del color de la tinta del capítulo. Estaban en
+     `--acento` —oro— y con eso los cuatro iconos eran una mancha dorada que
+     competía con los números y los títulos. */
+  fill: var(--tinta);
+  /* El que se enciende. NO es `--acento`: en un capítulo claro eso vale
+     #7A6032, un oro apagado a propósito para que el TEXTO llegue a 4,5:1.
+     Esto no es texto, es un adorno, y puede usar el oro real del manual. */
+  --modulo-on: #C9A15B;
   flex: 0 0 auto;
   margin-bottom: 0.1rem;
+}
+
+/* ⚠️ `:nth-of-type` y NO `:nth-child`. `haz.js` inyecta un `<canvas class="haz">`
+   como PRIMER HIJO de `.tarjetas`, así que las cuatro tarjetas son los hijos 2
+   a 5. Con `nth-child` todo quedaba corrido una posición: la etapa 1 recibía la
+   animación de dos módulos, la 4 no recibía ninguna. `nth-of-type` cuenta sólo
+   entre `<article>`, y el canvas deja de estorbar.
+
+   La primera etapa es UN módulo: no hay gris por donde viajar, así que queda
+   encendido. Es el prototipo — uno, y andando. */
+#roadmap .tarjeta:nth-of-type(1) .modulos rect { fill: var(--modulo-on); }
+
+/* En las otras tres el módulo encendido RECORRE la grilla.
+
+   El ciclo dura lo mismo en las tres —4,2 s—, así que cuantos más módulos hay
+   más rápido salta: la etapa de nueve se lee como un barrido y la de dos como
+   un pulso lento. La progresión de la sección contada por la velocidad, que es
+   de lo que habla la sección.
+
+   Corre sólo con la sección en pantalla, como todo lo demás del sitio. */
+#roadmap.en-vista .tarjeta:nth-of-type(2) .modulos rect { animation: modulo-2 4200ms var(--ease) infinite; }
+#roadmap.en-vista .tarjeta:nth-of-type(3) .modulos rect { animation: modulo-4 4200ms var(--ease) infinite; }
+#roadmap.en-vista .tarjeta:nth-of-type(4) .modulos rect { animation: modulo-9 4200ms var(--ease) infinite; }
+
+#roadmap.en-vista .tarjeta:nth-of-type(2) .modulos rect:nth-of-type(2) { animation-delay: 2100ms; }
+
+/* 2×2: en el DOM las celdas van TL, TR, BL, BR. Con ese orden el encendido
+   salta en diagonal de TR a BL y se ve como un parpadeo, no como un
+   recorrido. Los retardos lo mandan en círculo: TL → TR → BR → BL. */
+#roadmap.en-vista .tarjeta:nth-of-type(3) .modulos rect:nth-of-type(2) { animation-delay: 1050ms; }
+#roadmap.en-vista .tarjeta:nth-of-type(3) .modulos rect:nth-of-type(4) { animation-delay: 2100ms; }
+#roadmap.en-vista .tarjeta:nth-of-type(3) .modulos rect:nth-of-type(3) { animation-delay: 3150ms; }
+
+/* 3×3: barrido por filas, que es el orden del DOM. */
+#roadmap.en-vista .tarjeta:nth-of-type(4) .modulos rect:nth-of-type(2) { animation-delay:  467ms; }
+#roadmap.en-vista .tarjeta:nth-of-type(4) .modulos rect:nth-of-type(3) { animation-delay:  933ms; }
+#roadmap.en-vista .tarjeta:nth-of-type(4) .modulos rect:nth-of-type(4) { animation-delay: 1400ms; }
+#roadmap.en-vista .tarjeta:nth-of-type(4) .modulos rect:nth-of-type(5) { animation-delay: 1867ms; }
+#roadmap.en-vista .tarjeta:nth-of-type(4) .modulos rect:nth-of-type(6) { animation-delay: 2333ms; }
+#roadmap.en-vista .tarjeta:nth-of-type(4) .modulos rect:nth-of-type(7) { animation-delay: 2800ms; }
+#roadmap.en-vista .tarjeta:nth-of-type(4) .modulos rect:nth-of-type(8) { animation-delay: 3267ms; }
+#roadmap.en-vista .tarjeta:nth-of-type(4) .modulos rect:nth-of-type(9) { animation-delay: 3733ms; }
+
+/* El encendido SUBE rápido y BAJA lento, como los módulos del precargador
+   —que no saltan de un color al otro, se funden con `transition: 240ms
+   var(--ease)`—. Acá el mismo gesto en keyframes:
+
+     sube en un tercio de su turno · se sostiene hasta el final del turno ·
+     se apaga en el doble de tiempo que tardó en prender
+
+   La bajada se solapa con la subida del módulo siguiente, y ese solape es lo
+   que hace que se lea como un cuadro QUE VIAJA y no como luces que parpadean
+   por turnos: siempre hay uno encendido y otro apagándose atrás.
+
+   Los porcentajes cambian con N porque el turno de cada módulo es 1/N del
+   ciclo: a más módulos, turno más corto, y el mismo gesto comprimido. */
+@keyframes modulo-2 {
+  0%   { fill: var(--tinta); }
+  17%  { fill: var(--modulo-on); }
+  50%  { fill: var(--modulo-on); }
+  83%  { fill: var(--tinta); }
+  100% { fill: var(--tinta); }
+}
+@keyframes modulo-4 {
+  0%   { fill: var(--tinta); }
+  8%   { fill: var(--modulo-on); }
+  25%  { fill: var(--modulo-on); }
+  42%  { fill: var(--tinta); }
+  100% { fill: var(--tinta); }
+}
+@keyframes modulo-9 {
+  0%   { fill: var(--tinta); }
+  3.7% { fill: var(--modulo-on); }
+  11%  { fill: var(--modulo-on); }
+  24%  { fill: var(--tinta); }
+  100% { fill: var(--tinta); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* La regla global deja la duración en nada, así que las animaciones terminan
+     en su último cuadro: TODO oscuro y ningún módulo encendido. Se deja el
+     primero prendido a mano, que es el estado quieto que tiene sentido. */
+  #roadmap .modulos rect:nth-of-type(1) { fill: var(--modulo-on); }
 }
 
 /* La entrada: las cuatro etapas aparecen EN ORDEN cuando la sección entra en
