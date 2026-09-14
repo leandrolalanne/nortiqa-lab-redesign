@@ -911,8 +911,53 @@ body:not(.home) > main > section > ul { display: grid; gap: 0.5rem; }
    huérfana queda con una línea colgando sola. Por encima de 72rem entran las
    cinco en fila (regla más abajo); por debajo, apiladas. Apiladas las barras
    quedan una sobre otra, que también se lee como progresión. */
-.pasos { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0 var(--rhythm-s); }
-.paso { display: flex; flex-direction: column; gap: 0.55rem; padding: 1.6rem 0; border-top: 1px solid var(--rule); position: relative; }
+/* `perspective` acá y no en cada paso: puesta en el padre, las cinco tarjetas
+   giran vistas desde el MISMO punto de fuga y el volteo se lee como un solo
+   gesto. En cada hija, cada una tendría su propia perspectiva y girarían como
+   cinco objetos sueltos que casualmente hacen lo mismo. */
+.pasos { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0 var(--rhythm-s); perspective: 1400px; }
+
+/* Vidrio esmerilado: las tarjetas se apoyan sobre la onda, y sin fondo el
+   degradado les pasaba por encima del texto. El desenfoque la deja verse
+   —sigue moviéndose detrás— pero aplanada, que es para lo que sirve. */
+.paso {
+  display: flex; flex-direction: column; gap: 0.55rem;
+  padding: 1.6rem 1.1rem; border-top: 1px solid var(--rule); position: relative;
+  /* Sin tinte: sólo el desenfoque. `backdrop-filter` no necesita fondo —
+     trabaja sobre lo que hay detrás—, así que la tarjeta es vidrio limpio. */
+  background: transparent;
+  -webkit-backdrop-filter: blur(10px) saturate(115%);
+  backdrop-filter: blur(10px) saturate(115%);
+}
+
+/* El índice de cada paso, para escalonar el volteo y la barra. */
+.paso:nth-child(1) { --i: 0; }
+.paso:nth-child(2) { --i: 1; }
+.paso:nth-child(3) { --i: 2; }
+.paso:nth-child(4) { --i: 3; }
+.paso:nth-child(5) { --i: 4; }
+
+/* El volteo, uno atrás del otro. `backwards` los deja de canto ANTES de su
+   turno: sin eso los cinco se ven planos al entrar y recién después se voltean,
+   que es el gesto al revés.
+
+   Y va con `.en-vista`, o sea que sin JavaScript —o con movimiento reducido—
+   las tarjetas están puestas y las barras llenas desde el principio. La
+   animación agrega, no sostiene. */
+#metodo.en-vista .paso {
+  /* El eje va por el CENTRO de la tarjeta, no por su borde de arriba: gira
+     sobre sí misma en vez de caer colgada de la regla. */
+  transform-origin: center center;
+  animation: paso-voltea 900ms var(--ease) backwards;
+  animation-delay: calc(var(--i) * 260ms);
+}
+@keyframes paso-voltea {
+  /* `rotateY`: el eje es VERTICAL y la tarjeta gira como una puerta. Con
+     `rotateX` el eje es horizontal y se vuelca hacia adelante, que es el
+     otro gesto. */
+  from { opacity: 0; transform: rotateY(-84deg); }
+  to   { opacity: 1; transform: none; }
+}
 /* La marca dorada sobre la regla NO es un adorno: es dónde estás parado en el
    proceso. Antes los cinco pasos repetían el mismo 2.5rem —una barra al 25%
    dibujada cinco veces—, que es ruido. Ahora crece: 20, 40, 60, 80, 100.
@@ -921,15 +966,29 @@ body:not(.home) > main > section > ul { display: grid; gap: 0.5rem; }
    sólo después de validar el flujo»: una barra que se llena es exactamente eso,
    que nada avanza hasta que lo anterior está.
 
-   SIN animación, y a propósito. Roadmap ya tiene sus etapas apareciendo en
-   orden al entrar; si Método también se llenara, el gesto dejaría de ser un
-   momento y pasaría a ser un tic de la página. Que ésta se lea de un vistazo
-   es lo que hace que la otra se note. */
+   Acá decía «SIN animación, y a propósito», para que el gesto de Roadmap no
+   quedara como un tic más de la página. Cambió por pedido de Leandro: ahora
+   cada barra se llena CUANDO SU TARJETA TERMINA DE VOLTEARSE, así que no son
+   dos efectos sueltos — es uno solo, la tarjeta cae y entonces el proceso
+   avanza. */
 .paso::before {
   content: ""; position: absolute; top: -1px; left: 0;
   width: var(--avance, 20%); height: 3px; background: var(--acento);
   transition: width 220ms var(--ease);
 }
+/* La barra arranca en 0 y se llena DESPUÉS del volteo de su propia tarjeta:
+   el retardo es el de su volteo más la duración del volteo. `backwards` la
+   mantiene en 0 hasta que le toca; cuando la animación termina vuelve a mandar
+   el `width` estático, que ya vale lo mismo. */
+#metodo.en-vista .paso::before {
+  animation: paso-barra 560ms var(--ease) backwards;
+  animation-delay: calc(var(--i) * 260ms + 900ms);
+}
+@keyframes paso-barra {
+  from { width: 0; }
+  to   { width: var(--avance, 20%); }
+}
+
 .paso:nth-child(1) { --avance:  20%; }
 .paso:nth-child(2) { --avance:  40%; }
 .paso:nth-child(3) { --avance:  60%; }

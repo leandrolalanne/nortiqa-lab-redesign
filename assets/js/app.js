@@ -222,17 +222,22 @@
      resto. Se desconecta enseguida — si se reanimara en cada pasada, subir y
      bajar por la página dejaría las etapas parpadeando. */
 
-  var roadmap = document.getElementById('roadmap');
-  if (roadmap && 'IntersectionObserver' in window &&
+  if ('IntersectionObserver' in window &&
       !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    var vigiaRoadmap = new IntersectionObserver(function (e) {
-      for (var i = 0; i < e.length; i++) {
-        if (!e[i].isIntersecting) continue;
-        vigiaRoadmap.disconnect();
-        roadmap.classList.add('en-vista');
-      }
-    }, { threshold: 0.2 });
-    vigiaRoadmap.observe(roadmap);
+    ['metodo', 'roadmap'].forEach(function (id) {
+      var sec = document.getElementById(id);
+      if (!sec) return;
+      // Un vigía POR SECCIÓN, y cada uno se desconecta al disparar. Uno solo
+      // compartido tendría que acordarse de a quién ya marcó.
+      var vigia = new IntersectionObserver(function (e) {
+        for (var i = 0; i < e.length; i++) {
+          if (!e[i].isIntersecting) continue;
+          vigia.disconnect();
+          sec.classList.add('en-vista');
+        }
+      }, { threshold: 0.2 });
+      vigia.observe(sec);
+    });
   }
 
   /* -----------------------------------------------------------------------
