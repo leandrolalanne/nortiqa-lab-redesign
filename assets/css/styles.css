@@ -989,11 +989,57 @@ body:not(.home) > main > section > ul { display: grid; gap: 0.5rem; }
   to   { width: var(--avance, 20%); }
 }
 
-.paso:nth-child(1) { --avance:  20%; }
-.paso:nth-child(2) { --avance:  40%; }
-.paso:nth-child(3) { --avance:  60%; }
-.paso:nth-child(4) { --avance:  80%; }
-.paso:nth-child(5) { --avance: 100%; }
+.paso:nth-child(1) { --avance:  20%; --meta:  20; }
+.paso:nth-child(2) { --avance:  40%; --meta:  40; }
+.paso:nth-child(3) { --avance:  60%; --meta:  60; }
+.paso:nth-child(4) { --avance:  80%; --meta:  80; }
+.paso:nth-child(5) { --avance: 100%; --meta: 100; }
+
+/* EL NÚMERO QUE VIAJA EN LA PUNTA DE LA BARRA.
+
+   Un custom property no se puede animar salvo que esté DECLARADO con su tipo:
+   sin `@property`, el navegador lo trata como un texto cualquiera y salta de 0
+   al final sin pasar por el medio. Declarado como `<integer>`, interpola — y
+   `counter-reset` lo convierte en algo que `content` puede escribir. Es la
+   única forma de contar en CSS sin JavaScript.
+
+   Va en `::after` y arranca INVISIBLE, porque el número no es información que
+   la tarjeta tenga que dar: la barra ya dice dónde estás. El número existe
+   sólo mientras la barra crece, y se apaga al llegar.
+
+   Por eso también es `aria-hidden` de hecho: un `::after` no entra en el árbol
+   de accesibilidad como contenido, así que no hay nada que anunciar. */
+@property --pct {
+  syntax: "<integer>";
+  initial-value: 0;
+  inherits: false;
+}
+
+.paso::after {
+  counter-reset: pct var(--pct);
+  content: counter(pct) "%";
+  position: absolute; top: 0.3rem; left: 0;
+  margin-left: 0.45rem;
+  font-size: 0.5625rem; font-weight: 600; letter-spacing: 0.12em;
+  color: var(--acento);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* El `left` recorre lo mismo que el ancho de la barra y con los mismos
+   tiempos, así que el número va montado en la punta. Aparece enseguida, se
+   apaga sobre el final: cuando la barra llega a su número, el número ya no
+   está. */
+#metodo.en-vista .paso::after {
+  animation: paso-cuenta 560ms var(--ease) backwards;
+  animation-delay: calc(var(--i) * 260ms + 900ms);
+}
+@keyframes paso-cuenta {
+  0%   { --pct: 0;           left: 0;              opacity: 0; }
+  14%  {                                           opacity: 1; }
+  78%  {                                           opacity: 1; }
+  100% { --pct: var(--meta); left: var(--avance);  opacity: 0; }
+}
 .paso .hud { color: var(--acento); }
 .paso p { color: var(--ink-2); font-size: 0.9375rem; }
 
