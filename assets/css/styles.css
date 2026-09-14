@@ -1940,14 +1940,30 @@ body.fuera-hero > header {
   }
 }
 
-/* COLOCACIÓN — lo único que se agrega, y va aparte para no ensuciar la copia.
-   El centrado NO puede ir en `transform`: el keyframe escribe ahí y se llevaría
-   puesto el `translate`. Va en `left`/`top` con el radio restado. */
-.spinner {
+/* EL ENVOLTORIO. Lleva la colocación y el rótulo; el `.spinner` de arriba
+   queda tal como se publica.
+
+   Existe por dos razones. Una: el `.spinner` gira, así que el rótulo no puede
+   vivir adentro de él —giraría—, y necesita un padre quieto que los alinee a
+   los dos. La otra: en teléfono el mapa deja de ser un diagrama y se vuelve
+   una grilla de piezas; con el núcleo repartido en dos elementos sueltos y
+   absolutos, los dos se quedaban flotando encima de los chips. Juntos, se
+   mueven juntos. */
+.nucleo {
   position: absolute;
   left: calc(50% - 50px);
   top:  calc(50% - 50px);
+  width: 100px; height: 100px;
+  display: grid; place-items: center;
   pointer-events: none;
+}
+
+/* COLOCACIÓN del componente — lo único que se le agrega, aparte para no
+   ensuciar la copia. El centrado NO puede ir en `transform`: el keyframe
+   escribe ahí y se llevaría puesto el `translate`. */
+.spinner {
+  position: absolute;
+  left: 0; top: 0;
   /* 5,1 s en vez de 1,7: el triple de lento. El original es un LOADER y tiene
      que verse ocupado; acá es el latido de un núcleo en un diagrama que se mira
      mientras se lee al lado. La regla de arriba conserva el valor publicado. */
@@ -1963,12 +1979,13 @@ body.fuera-hero > header {
    el rótulo. Va DESPUÉS del `.spinner` en el marcado, así queda encima sin
    necesidad de `z-index`. */
 .nucleo-texto {
-  position: absolute; left: 50%; top: 50%;
-  transform: translate(-50%, -50%);
+  /* `relative` y no `absolute`: lo centra el `place-items` del envoltorio. El
+     `relative` es sólo para que quede por encima del `.spinner`, que sí es
+     absoluto, sin tener que inventar un `z-index`. */
+  position: relative;
   display: grid; justify-items: center; gap: 0.15rem;
   text-align: center;
   color: var(--tinta);
-  pointer-events: none;
 }
 .nucleo-texto > strong { font-size: var(--step-2); font-weight: 600; letter-spacing: 0.06em; line-height: 1; }
 .nucleo-texto > small  { color: var(--tinta); opacity: 0.68; font-size: 0.5rem; }
@@ -1991,18 +2008,31 @@ body.fuera-hero > header {
        ancho de la caja —medido: 587 px a 700 de ventana—. En grilla,
        `grid-column: 1 / -1` le da la fila entera sin tocarle el tamaño. */
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 7rem), 1fr));
+    /* Columnas CONTADAS, no `auto-fit`. Con `auto-fit` el navegador mete las
+       que entren y las seis piezas caían 5+1: una huérfana sola en la última
+       fila. Son seis, así que 2 o 3 columnas las reparten parejo siempre. */
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     justify-items: center; align-items: center;
     gap: 0.6rem;
     padding: 1.25rem;
   }
   .mapa::before, .mapa::after { display: none; }
-  .mapa-nucleo {
-    position: static; transform: none;
+  /* El núcleo entero —aro y rótulo— toma la fila completa arriba de las
+     piezas. `relative` porque el `.spinner` de adentro es absoluto y necesita
+     a quién agarrarse; si acá quedara `static`, se iría a buscar el `.mapa` y
+     volvería a caer encima de los chips. */
+  .nucleo {
+    position: relative;
+    left: auto; top: auto;
     grid-column: 1 / -1;
-    width: clamp(4rem, 3rem + 6vw, 5rem);
+    justify-self: center;
   }
   .mapa-item { position: static; }
+}
+
+/* Tres columnas en cuanto entran: 3+3 en vez de 2+2+2. */
+@media (min-width: 30rem) and (max-width: 48rem) {
+  .mapa { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
 
