@@ -18,6 +18,7 @@
     <script src="assets/js/terminal.js" defer></script>
     <script src="assets/js/tablero.js" defer></script>
     <script src="assets/js/volanta.js" defer></script>
+    <script src="assets/js/formulario.js" defer></script>
     <script src="assets/js/app.js" defer></script>
   </head>
   <body class="home">
@@ -429,6 +430,58 @@
           <h2 id="contacto-titulo">¿Qué proceso querés transformar?</h2>
         </header>
         <p>Si es repetitivo, documental, operativo o intensivo en información, podemos convertirlo en un flujo claro, trazable y medible.</p>
+
+        <!-- El destino vive en `data-destino` y ARRANCA VACÍO: sin él,
+             `formulario.js` deja el formulario inerte y muestra el correo.
+             Un formulario que acepta envíos sin tener a dónde entregarlos
+             pierde consultas en silencio, que es peor que no tenerlo.
+             Para activarlo: poner la URL del webhook acá. Nada más. -->
+        <form class="form" id="form-contacto" method="post" novalidate
+              data-destino=""
+              aria-labelledby="form-titulo">
+          <h3 id="form-titulo" class="solo-lectores">Formulario de contacto</h3>
+
+          <div class="form-campo">
+            <label for="f-nombre">Nombre</label>
+            <input id="f-nombre" name="nombre" type="text" required
+                   maxlength="80" autocomplete="name">
+          </div>
+          <div class="form-campo">
+            <label for="f-correo">Correo</label>
+            <input id="f-correo" name="correo" type="email" required
+                   maxlength="120" autocomplete="email" inputmode="email">
+          </div>
+          <div class="form-campo form-campo--ancho">
+            <label for="f-organizacion">Organización <span>opcional</span></label>
+            <input id="f-organizacion" name="organizacion" type="text"
+                   maxlength="80" autocomplete="organization">
+          </div>
+          <div class="form-campo form-campo--ancho">
+            <label for="f-mensaje">¿Qué proceso querés transformar?</label>
+            <textarea id="f-mensaje" name="mensaje" required rows="4"
+                      maxlength="2000"></textarea>
+          </div>
+
+          <!-- Trampa: ningún humano la ve ni la tabula; los bots la llenan.
+               Va oculta por CSS y no por `type="hidden"`, que los bots saltean. -->
+          <div class="form-trampa" aria-hidden="true">
+            <label for="f-sitio">Dejar vacío</label>
+            <input id="f-sitio" name="sitio" type="text" tabindex="-1" autocomplete="off">
+          </div>
+
+          <div class="form-campo form-campo--ancho form-acuerdo">
+            <input id="f-acuerdo" name="acuerdo" type="checkbox" required>
+            <label for="f-acuerdo">Acepto que usen estos datos para responder mi
+              consulta, según la <a href="privacidad.html">política de privacidad</a>.</label>
+          </div>
+
+          <button type="submit" class="form-enviar">Enviar consulta</button>
+
+          <!-- `role="status"` para que el lector de pantalla anuncie el
+               resultado sin que el foco se mueva. -->
+          <p class="form-estado" role="status" aria-live="polite"></p>
+        </form>
+
         <div class="acciones">
           <a href="contacto.html">Proponer un piloto ↗</a>
           <a href="mailto:hola@nortiqalab.com">hola@nortiqalab.com →</a>

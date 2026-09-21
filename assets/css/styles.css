@@ -2303,3 +2303,109 @@ body.fuera-hero > header {
      que baja el mapa hasta el titular sólo tiene sentido en dos columnas. */
   .cap-cols--par > .arq { margin-top: 0; }
 }
+
+/* --------------------------------------------------------------------------
+   19. El formulario de contacto
+
+   Vive en `#contacto`, que es `.cap--cierre` y centra todo su texto. El
+   formulario NO se centra: las etiquetas y los campos se leen alineados a la
+   izquierda, así que la rejilla se centra como bloque y adentro todo arranca
+   al borde.
+
+   Sin librerías y sin clases de estado en JS: los estados de validez los
+   pinta el navegador con `:user-invalid`, que —a diferencia de `:invalid`—
+   solo marca en rojo DESPUÉS de que la persona tocó el campo. Un formulario
+   que se pinta de rojo apenas carga es hostil.
+   -------------------------------------------------------------------------- */
+
+.form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem 1rem;
+  width: min(100%, 44rem);
+  margin-inline: auto;
+  text-align: start;
+}
+
+.form-campo { display: grid; gap: 0.4rem; margin: 0; }
+.form-campo--ancho { grid-column: 1 / -1; }
+
+.form-campo > label {
+  font-size: var(--step--2); font-weight: 600; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--ink-2);
+}
+.form-campo > label > span {
+  text-transform: none; letter-spacing: 0.04em; color: var(--ink-3);
+  font-weight: 500;
+}
+
+.form input[type="text"],
+.form input[type="email"],
+.form textarea {
+  font: inherit; font-size: var(--step--1); color: var(--ink);
+  background: color-mix(in srgb, var(--void) 60%, transparent);
+  border: 1px solid var(--rule);
+  padding: 0.8rem 0.9rem;
+  min-height: 44px;
+  width: 100%;
+  /* Sin `appearance: none`: en móvil quita el teclado contextual. */
+  border-radius: 0;
+}
+.form textarea { resize: vertical; min-height: 7rem; line-height: 1.5; }
+
+.form input:hover, .form textarea:hover { border-color: var(--ink-3); }
+.form input:focus-visible,
+.form textarea:focus-visible { border-color: var(--acento); }
+
+/* Solo después de interactuar. Ver la nota de arriba. */
+.form input:user-invalid,
+.form textarea:user-invalid { border-color: #C2554E; }
+
+/* La trampa. No `display:none` ni `hidden`: los bots que leen el CSS saltean
+   lo que está oculto de forma obvia. Queda fuera de la vista y fuera del
+   orden de tabulación, que es lo que importa para quien usa teclado. */
+.form-trampa {
+  position: absolute; left: -9999px;
+  width: 1px; height: 1px; overflow: hidden;
+  margin: 0;
+}
+
+.form-acuerdo {
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  gap: 0.6rem;
+  margin-top: 0.2rem;
+}
+.form-acuerdo > input { width: 1.05rem; height: 1.05rem; margin-top: 0.15rem; accent-color: var(--gold); }
+.form-acuerdo > label {
+  font-size: var(--step--2); letter-spacing: 0.02em; text-transform: none;
+  font-weight: 500; color: var(--ink-2); line-height: 1.5;
+}
+.form-acuerdo a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+.form-acuerdo a:hover { color: var(--acento); }
+
+.form-enviar {
+  grid-column: 1 / -1;
+  justify-self: start;
+  font: inherit;
+  font-size: var(--step--2); font-weight: 600; letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 0.95rem 1.6rem; min-height: 44px;
+  background: var(--acento); border: 1px solid var(--acento); color: var(--claro);
+  cursor: pointer;
+}
+.form-enviar:hover { background: var(--bone); border-color: var(--bone); color: var(--void); }
+.form-enviar[disabled] { opacity: 0.5; cursor: not-allowed; }
+.form-enviar[disabled]:hover { background: var(--acento); border-color: var(--acento); color: var(--claro); }
+
+.form-estado {
+  grid-column: 1 / -1;
+  margin: 0; min-height: 1.4em;
+  font-size: var(--step--1); color: var(--ink-2);
+}
+.form-estado[data-tono="error"] { color: #E08C86; }
+.form-estado[data-tono="bien"]  { color: var(--acento); }
+
+@media (max-width: 40rem) {
+  .form { grid-template-columns: 1fr; }
+}
