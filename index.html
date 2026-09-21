@@ -482,8 +482,11 @@
           <p class="form-estado" role="status" aria-live="polite"></p>
         </form>
 
+        <!-- Un solo camino. "Proponer un piloto" mandaba a contacto.html, que
+             abajo del formulario competía con él y repetía el mismo destino.
+             Queda el correo, que es el camino que de verdad funciona hoy.
+             Al ser ahora `:first-child`, hereda el tratamiento en oro. -->
         <div class="acciones">
-          <a href="contacto.html">Proponer un piloto ↗</a>
           <a href="mailto:hola@nortiqalab.com">hola@nortiqalab.com →</a>
         </div>
       </section>
