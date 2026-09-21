@@ -716,6 +716,11 @@ body:not(.home) > main > section > ul { display: grid; gap: 0.5rem; }
   padding: var(--rhythm) var(--gutter);
   display: flex; flex-direction: column; gap: var(--rhythm-s);
   align-items: stretch;
+  /* La cabecera es `position: fixed`, así que un ancla deja el arranque de la
+     sección debajo de la barra. `scroll-margin-top` corre el punto de frenado
+     lo que mide el cromo — y como usa la variable, sigue sola al breakpoint de
+     56rem, donde la cabecera crece a 5.5rem. */
+  scroll-margin-top: var(--alto-cabecera);
 }
 
 /* El relleno: tapa la escena 3D, deja pasar el campo de módulos. */
