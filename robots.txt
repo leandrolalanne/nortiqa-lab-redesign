@@ -1,17 +1,8 @@
-# Solo la portada y contacto quedan abiertas al rastreo. El resto se bloquea:
-# son paginas de producto y de tramite que no aportan como entrada desde un
-# buscador, y varias duplican contenido que ya esta en la home.
-#
-# assets/ va permitido a proposito: si se bloquea, el buscador descarga el HTML
-# pero no el CSS ni el JS, y evalua una pagina rota. Google lo marca como
-# problema de renderizado.
-#
-# La regla mas especifica gana, asi que el `Disallow: /` de abajo no pisa a los
-# `Allow` de arriba.
+# Sitio en produccion: se indexa todo salvo las paginas de tramite, que no
+# funcionan como entrada desde un buscador.
 
 User-agent: *
-Allow: /$
-Allow: /index.html
-Allow: /contacto.html
-Allow: /assets/
-Disallow: /
+Disallow: /aviso-legal.html
+Disallow: /privacidad.html
+
+Sitemap: https://nortiqalab.com/sitemap.xml
