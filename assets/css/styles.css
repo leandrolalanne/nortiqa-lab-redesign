@@ -1884,9 +1884,6 @@ body > header.abierto .hamburguesa-lineas::after  { transform: translateY(-7px) 
   #hero > .tira > .capacidad { padding-block: 0.65rem; }
 }
 
-/* --------------------------------------------------------------------------
-   16. Carrusel de marcas (`LogoCarousel` de cult-ui)
-   -------------------------------------------------------------------------- */
 
 /* Tres ventanas centradas; en cada una los logos se turnan. El original usa
    `motion/react` con un resorte; acá el movimiento lo hacen transiciones CSS y
@@ -1903,31 +1900,9 @@ body > header.abierto .hamburguesa-lineas::after  { transform: translateY(-7px) 
 /* SEIS columnas y no cinco. Con cinco, los dos tramos donde la barra envuelve
    dejaban una huérfana: 3 columnas daban 3+2 y 2 columnas daban 2+2+1. Seis es
    divisible por los tres repartos —6, 3 y 2— así que ninguno deja sobrante. */
-.marcas {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  align-items: center;
-  justify-items: center;
-  gap: 0;
-  max-width: none;
-  width: auto;
-  margin-inline: calc(var(--gutter) * -1);
-  /* Sin `margin-top`: `.cap` ya separa a sus hijos con `gap: var(--rhythm-s)`,
-     y el margen lo duplicaba —96 px desde el fondo de la columna más alta—.
-     Mismo caso que la medición en el pie. */
-}
 
-.marca-col {
-  position: relative;
-  width: 100%;
-  height: clamp(2.6rem, 2.2rem + 2vw, 4rem);
-}
 /* Escalonado entre columnas, una por una: es `transition-delay` y no un
    temporizador por columna, así el reloj sigue siendo uno solo. */
-.marca-col:nth-child(2) .marca { transition-delay: 150ms; }
-.marca-col:nth-child(3) .marca { transition-delay: 300ms; }
-.marca-col:nth-child(4) .marca { transition-delay: 450ms; }
-.marca-col:nth-child(5) .marca { transition-delay: 600ms; }
 
 /* Menos columnas en pantallas angostas: con `auto-fit` el navegador armaría
    tantas como entren y las cinco quedarían apretadas a un costado. */
@@ -1935,30 +1910,8 @@ body > header.abierto .hamburguesa-lineas::after  { transform: translateY(-7px) 
 @media (max-width: 40rem) { .marcas { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
 /* Reposo: esperando abajo, invisible y desenfocado. */
-.marca {
-  position: absolute; inset: 0;
-  display: grid; place-items: center;
-  opacity: 0;
-  transform: translateY(10%);
-  filter: blur(8px);
-  transition: opacity 500ms var(--ease), transform 500ms var(--ease), filter 500ms var(--ease);
-}
-.marca svg {
-  width: 100%; height: 100%;
-  max-width: 2.6rem; max-height: 2.6rem;
-  fill: var(--ink-2);
-  transition: fill 220ms var(--ease);
-}
-.marca.on { opacity: 1; transform: none; filter: none; }
 /* Saliendo: hacia arriba. Es un estado aparte del de reposo porque el que se va
    sube y el que espera está abajo; con una sola clase no se distinguen. */
-.marca.sale {
-  opacity: 0;
-  transform: translateY(-20%);
-  filter: blur(6px);
-  transition-duration: 300ms;
-}
-.marcas:hover .marca.on svg { fill: var(--acento); }
 
 
 /* --------------------------------------------------------------------------
@@ -2057,7 +2010,6 @@ body.fuera-hero > header {
    MISMOS cortes: oculto por debajo de 88rem, marcadores sin etiqueta hasta
    104rem, con etiquetas por encima. El relleno va simétrico para que la fila
    no quede corrida. */
-.marcas { padding-inline: var(--gutter); }
 @media (min-width: 104rem) { .marcas { padding-inline: calc(var(--gutter) + 8rem); } }
 
 
