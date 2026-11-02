@@ -99,53 +99,6 @@
       "donde": "index.html, incrustados en la tira del hero",
       "nota": "Incrustados y no como <img> para que tomen currentColor del capitulo. Trazo bajado de 2 a 1.5."
     },
-    "logos_marcas": {
-      "nombre": "Simple Icons",
-      "origen": "https://simpleicons.org · github.com/simple-icons/simple-icons",
-      "licencia": "CC0-1.0",
-      "usados": [
-        "n8n",
-        "ubuntu",
-        "postgresql",
-        "letsencrypt",
-        "odoo",
-        "git",
-        "docker",
-        "metabase",
-        "python",
-        "nginx",
-        "github",
-        "claude",
-        "googlegemini",
-        "opencode"
-      ],
-      "donde": "index.html, carrusel de tecnologias en #arquitectura",
-      "nota": "Monocromos, incrustados, tomando color del capitulo. Barra a todo el ancho. Son el stack que el lab opera segun la infra de srv-erp."
-    },
-    "logos_ia": {
-      "nombre": "Logos de IA en la barra de tecnologías",
-      "_nota": "Los tres de Simple Icons están arriba. Acá van los que hubo que buscar en otra fuente porque Simple Icons no los tiene.",
-      "chatgpt": {
-        "origen": "github.com/gilbarbara/logos — logos/openai-icon.svg",
-        "licencia": "CC0-1.0",
-        "nota": "Una sola ruta monocroma. Simple Icons no tiene el de OpenAI."
-      },
-      "openclaw": {
-        "origen": "github.com/openclaw/openclaw — ui/public/favicon.svg",
-        "licencia": "MIT (del repositorio)",
-        "nota": "APLANADA del favicon del proyecto: fuera el degradado y la animacion SMIL. Los OJOS son elementos <circle>, no <path>: una primera extraccion que solo tomo rutas los perdio y quedaba un bicho sin cara. Van como huecos de una <mask>, que es la unica forma de calarlos manteniendo una sola tinta sobre cualquier fondo. La MIT del repositorio cubre el codigo, no la marca."
-      },
-      "hermes": {
-        "origen": "hermes-agent.nousresearch.com — el favicon que sirve el sitio en vivo. El vector sale de web-assets.nousresearch.com/.../hermes-landing/nous-girl-badge.svg",
-        "licencia": "Marca de Nous Research. Sin licencia abierta: figura como tecnología, no como sociedad.",
-        "nota": "OJO 1: el website/static/img/favicon.svg DEL REPOSITORIO esta desactualizado -es el caracter U+2624- y no es lo que el sitio publica. El logo real es la ilustracion que sirve hermes-agent.nousresearch.com. OJO 2: la ruta NO se puede redondear. Se intento y rompio el dibujo: el logo es un badge con la figura CALADA, y el calado depende de precision por debajo de la centesima. Redondeando a 2 decimales la tinta pasaba de 57% a 98,7% -un bloque solido- y a 1 decimal, 99,2%. Va con sus 45.101 bytes intactos. Quitarle el azul propio para que herede el color de la barra si es seguro."
-      },
-      "aws": {
-        "origen": "assets/img/marcas/aws.svg — gilbarbara/logos, el MISMO archivo que usa la tira de partners",
-        "licencia": "CC0-1.0 (el trazado). La marca es de Amazon.",
-        "nota": "Simple Icons NO tiene AWS: Amazon pidio que lo sacaran. Se reusa el archivo que ya viaja con el sitio, inline y sin sus dos colores (#252F3E y #FF9900) para que herede el gris de la barra. Reemplaza a Hetzner."
-      }
-    },
     "logos_partners": {
       "nombre": "gilbarbara/logos",
       "origen": "https://github.com/gilbarbara/logos",
